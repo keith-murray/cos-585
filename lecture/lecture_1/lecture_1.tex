@@ -1,0 +1,358 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb}
+\usepackage{pgfplots}
+
+\begin{document}
+
+\section{Introduction}
+
+Today will be about the entropy function. But first, some logistics:
+\begin{enumerate}
+    \item Usually will end before 4 pm.
+    \item Textbook is ``Elements of Information Theory'' by Cover and Thomas
+    \item Grading consists of 4 problem sets with submission after 2-3 weeks. Collaborations in groups of 3 is allowed, except in the first assignment.
+    \item Office hours are by TAs. 
+\end{enumerate}
+
+\subsection{The beginning of information theory}
+
+The field begins with Shannon in 1948 titled ``A mathematical theory of communication'', one of the most important papers of the $20^{th}$ century. I immediately revolutionized EE, and then all of science. There is almost no other example for a paper that became so central, so quickly, in so many different research areas.
+
+We will learn information theory as a tool and as a language. Everything that Shannon did in that paper was relatively simple: an example of how to do amazing science by asking the right questions.
+
+\subsection{Syllabus}
+
+\begin{enumerate}
+    \item Shannon's entropy function
+    \item Basic notions, equalities and inequalities of information theory
+    \item Data compression 
+    \item Maximum entropy principle 
+    \item Relative entropy; Differential entropy 
+    \item Kolmogorov complexity 
+    \item Applications to discrete math 1; Shearer's theorem 
+    \item Applications to discrete math 2
+    \item Noisy channel theorem; Channel capacity 
+    \item Polar codes 
+    \item Communication complexity and information complexity 
+    \item Quantum information 
+\end{enumerate}
+
+\section{Entropy function}
+
+Let $X$ be a discrete random variables (just a finite number of states). We define the entropy of $X$ as 
+\begin{equation}
+    H(X) = -\sum_{a} P(X=a)\, \log_2 P(X=a)=-\sum_{a} P(a)\, \log_2 P(a)
+\end{equation}
+In this formula, $P=\text{Prob}$, $0\log 0=0$, and the $\log$ is always base 2. We can also write this formula as 
+\[
+H(X) = -\sum_{i }P_i \log P_i
+\]
+or also as 
+\[
+H(X) = - \mathbb{E}_X\left[\log P(X)\right]=\mathbb{E}_X\frac{1 }{P(X)}
+\]
+Here, we think of $P(X)$ itself as a random variable (any function of a random variable is a random variable).
+
+\subsection{Example}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|}
+\hline
+$x$ & $P(x)$ \\ \hline
+0   & $1/2$  \\ \hline
+1   & $1/4$  \\ \hline
+2   & $1/4$  \\ \hline
+\end{tabular}
+\caption{Probability Distribution Table}
+\label{tab:prob_dist}
+\end{table}
+
+We have table (\ref{tab:prob_dist}) that means $P(X)$ is $1/2$ with probability $1/2$ and $1/4$ with probability $1/2$.
+
+\subsection{Back to the entropy function}
+
+Shannon introduced the Entropy function in 1948 as a measure for the Uncertainty of a random variable $X$.
+
+The intuitions we will have:
+\begin{enumerate}
+    \item Uncertainty about the value of $X$
+    \item The number of bits needed to describe $X$
+\end{enumerate}
+
+\subsubsection{Example}
+
+The distribution of $X$ is $P_X=\left(1/2, 1/4, 1/4\right)$. Then the entropy of $X$ is 
+\[
+H(X) = -\frac{1}{2}\log \frac{1}{2} \cdots
+\]
+What we see from this example is that the entropy depends only on the distribution and is symmetric.
+
+We will denote $H$ also as a function of the distribution $P_X$.
+\begin{itemize}
+    \item $H(X)=H(\frac{1}{2},\frac{1}{4},\frac{1}{4})$
+    \item $H(X) = H(P_X)$
+\end{itemize}
+
+\subsubsection{Example: The uniform distribution}
+
+If $X$ is uniformly distributed over $\left\{0,1\right\}^n$,
+\[
+H(X) = H\left(\frac{1}{2^n},\ldots,\frac{1}{2^n}\right)=-\sum_{2^n}^{i=1}\frac{1}{2^n}\log \frac{1}{2^n}=-\log\frac{1}{2^n}=n
+\]
+Intuition is that we need $n$ bits to describe a random distribution.
+
+\subsubsection{Example: Binary Entropy Function}
+
+We have $P_X(p,q)$ with $p+q=1$. Then we have 
+\[
+H(X) = H(p,q)=-p\log p - q\log q
+\]
+(He plots the graph here, which we should include). It follows that 
+\[
+H(0,1)=H(1,0)=0
+\]
+and 
+\[
+H\left(\frac{1}{2},\frac{1}{2}\right)=1
+\]
+We have some properties:
+\begin{enumerate}
+    \item $H$ is symmetric
+    \item $H$ is continuous $\left(H(0.001,0.999)\approx H(0,1)\right)$
+    \item $H$ is concave (bounded by two parabolas)
+\end{enumerate}
+
+\section{Why this function?}
+
+Shannon introduced the function $H$ as a measure for the Uncertainty of a random variable $X$. There could be many other candidates. Why this particular function? What is the secret of this function?
+
+Let's tak and axiomatic approach: What properties do we want a measure for the uncertainty of a random variable to satisfy?
+
+\subsection{Simple Properties that $H$ should satisfy}
+
+We are looking for a measure $H$ for the uncertainty of a random variable. We want $H$ to satisfy the following properties:
+\begin{enumerate}
+    \item $H$ is a continuous symmetric function that depends only on the distribution
+    \item $H\left(\frac{1}{2},\frac{1}{2}\right)=1$ (scaling). Also $H\left(\frac{1}{2^n},\ldots,\frac{1}{2^n}\right)=n$ (although this is not really needed).
+    \item $H\left(\frac{1}{2},\frac{1}{2}\right)\leq H\left(\frac{1}{3},\frac{1}{3},\frac{1}{3}\right)\leq H\left(\frac{1}{4},\frac{1}{4},\frac{1}{4},\frac{1}{4}\right)\leq \cdots$
+    \item The Grouping Axiom 
+\end{enumerate}
+There was a question of why does $H$ need to be continuous. It's important to note that this is continuity in the values in the distribution, not the number of values the distribution can take (which is obviously not continuous).
+
+\subsection{The Grouping Axiom: Example}
+
+What about $H\left(\frac{1}{3},\frac{1}{3},\frac{1}{3}\right)$ or $H\left(\frac{1}{2},\frac{1}{4},\frac{1}{4}\right)$ or $H\left(\frac{1}{3},\frac{2}{3}\right)$? What do we expect them to be?
+We have the table (\ref{tab:prob_dist}) with $X\in\left\{0,1,2\right\}$ and $P_X=\left( \frac{1}{2},\frac{1}{4},\frac{1}{4} \right)$. We need one bit to tell whether $X=0$ or $X\in\left\{1,2\right\}$. Then, if $X=0$ we are done. If $X\in\left\{1,2\right\}$ (which occurs with probability $1/2$), we need one more bit to tell whether $X=1$ or $X=2$. In expectation, we need $1.5$ bits.
+
+Hence, we require 
+\[
+H\left( \frac{1}{2},\frac{1}{4},\frac{1}{4} \right) = H\left( \frac{1}{2},\frac{1}{2}\right) + \frac{1}{2}\cdot 0 + \frac{1}{2}\cdot H\left( \frac{1}{2},\frac{1}{2}\right)=1.5
+\]
+Some other examples of the grouping axiom are 
+\[
+H\left( \frac{1}{3},\frac{1}{3},\frac{1}{3} \right) = H\left( \frac{1}{3},\frac{2}{3} \right) + \frac{1}{3}\cdot 0 + \frac{2}{3}\cdot H\left( \frac{1}{2},\frac{1}{2} \right)
+\]
+
+\subsubsection{The Grouping Axiom: Special Case}
+
+Suppose $X$ can take the following values $X\in\left\{1,\ldots,9\right\}$ with probabilities $P_X=\left(p_1,\ldots, p_9\right)$. We let $q_1=p_1+p_2+p_3$ and $q_2=p_4+p_5+p_6$ and $q_3=p_7+p_8+p_9$. Then 
+\begin{align*}
+    H&\left(p_1,\ldots, p_9 \right) =\\
+    &H\left(q_1,q_2,q_3\right) + q_1\cdot H\left(\frac{p_1}{q_1},\frac{p_2}{q_1},\frac{p_3}{q_1}\right) + q_2\cdot H\left(\frac{p_4}{q_2},\frac{p_5}{q_2},\frac{p_6}{q_2}\right) + q_3\cdot H\left(\frac{p_7}{q_3},\frac{p_8}{q_3},\frac{p_9}{q_3}\right)
+\end{align*}
+
+\subsubsection{The Grouping Axiom: General Case}
+
+The same for any partition of the elements into groups (not necessarily of the same size). Let 
+\begin{enumerate}
+    \item $X\in\left\{1,\ldots,m\right\}$
+    \item $P_X=\left(p_1,\ldots,p_m\right)$
+    \item $0=m_0 < m_1 < m_2 < \cdots < m_k=m$
+    \item $q_1=p_1+\cdots + p_m$, $q_2=p_{m_1+1}+\cdots + p_{m_2}$, $\ldots$, $q_i=p_{m_i+1}+\cdots + p_{m_i}$, $\ldots$, $q_k=p_{m_{k-1}+1}+\cdots+p_m$
+\end{enumerate}
+Then we can write 
+\begin{align}
+    H&(p_1,\ldots,p_m)=\\
+    &H(q_1,\ldots,q_k) + q_1 \cdot H(\frac{p_1}{q_1},\ldots, \frac{p_{m_1}}{q_1})+\cdots + q_k \cdot H\left( \frac{p_{m_{k-1}+1}}{q_k}+\cdots+ \frac{p_m}{q_k} \right)
+\end{align}
+
+
+\subsubsection{The Grouping Axiom: Another Special Case}
+
+We can write 
+\begin{align*}
+    H\left(p_1,p_2,p_3,\ldots, p_m\right)= \text{And I lost it}
+\end{align*}
+
+\section{What can we do with these axioms?}
+
+\subsection{Computing $H\left(\frac{1}{3},\frac{1}{3},\frac{1}{3}\right)$}
+
+By grouping, we can write 
+\[
+H\left(\frac{1}{9},\ldots,\frac{1}{9}\right)=H\left(\frac{1}{3},\frac{1}{3},\frac{1}{3}\right)+H\left(\frac{1}{3},\frac{1}{3},\frac{1}{3}\right)=2\cdot H\left(\frac{1}{3},\frac{1}{3},\frac{1}{3}\right)
+\]
+Let $U_m$ be the uniform distribution over $m$ elements. Then 
+\begin{itemize}
+    \item $H\left(U_9\right)=2\cdot H\left(U_3\right)$
+    \item $H\left(U_{3^n}\right)=n\cdot H\left(U_3\right)$
+\end{itemize}
+Let $k$ be such that $2^k< 3^n < 2^{k+1}$, that is 
+\[
+k=\lfloor n\cdot \log_2 3 \rfloor,\quad k+1 = \lceil n\cdot \log_2 3\rceil 
+\]
+By third axiom, we have 
+\[
+k=H(U_{2^k})\leq H(U_{3^n})\leq H(U_{2^{k+1}})=k+1
+\]
+Hence,
+\[
+\frac{\lfloor n\cdot \log_2 3 \rfloor}{n}\leq H\left(U_3\right) \leq \frac{\lceil n\cdot \log_2 3\rceil }{n}
+\]
+Since this is true for every $n\to\infty$, we have 
+\[
+H\left(\frac{1}{3},\frac{1}{3},\frac{1}{3}\right)=\log_2 3
+\]
+In the same way, we can write 
+\[
+H(U_m) = H\left(\frac{1}{m},\ldots,\frac{1}{m}\right) = \log_2 m
+\]
+
+\subsection{Computing $H\left(p,q\right)$}
+
+Assume $p=\frac{k}{m}$ and $q=\frac{m-k}{m}$ where $k,m$ are integers. That is to say that $p$ and $q$ are rational numbers.
+
+Take $U_m=\left(\frac{1}{m},\ldots,\frac{1}{m}\right)$. Recall that $H(U_n)=\log_2 n$. By partitioning $m=k+(m-k)$, we can write 
+\[
+H(U_m)= H(p,q) + p\cdot H(U_k) + q\cdot H()U_{}m-k
+\]
+where rearranging gives us 
+\begin{align*}
+    H(p,q) &= H(U_m)- p\cdot H(U_k) - q\cdot H(U_{m-k})\\
+    &= \log m -p\log k - q\log \left(m-k\right)\\
+    &= p\cdot \left(\log m - \log k \right) + q\cdot \left(\log m - \log \left(m-k\right)\right)\\
+    &= -p\log\left(\frac{k }{m }\right) - q\log\left(\frac{m-k }{m}\right)= -p\log p - q \log q
+\end{align*} 
+where we remember that $p+q=1$ so we can write $\log m = p\log m + q \log m$. Since $H$ is continuous, for every $p,q$, we have 
+\[
+H(p,q) = -p\log p -q\log q
+\]
+
+\subsection{Computing $H\left(p_1,\ldots, p_n\right)$}
+
+It is similar to before! Assume $p_i=\frac{k_i}{m}$, where $k_1+\cdots+k_n = m$. Take $U_m=\left(\frac{1}{m},\ldots,\frac{1}{m}\right)$. Partition $m$ elements into groups of sizes $k_1,\ldots,k_n$. Then we have 
+\[
+H(U_m) = H(p_1,\ldots, p_n)+ \sum_i p_i\cdot H(U_{k_i})
+\]
+where rearranging gives us 
+\begin{align*}
+    H(p_1,\ldots, p_n) &= H(U_m) - \sum_i p_i\cdot H(U_{k_i})\\
+    &= \log m - \sum_i p_i\cdot \log k_i = \sum_i p_i\cdot \left(\log m - \log k_i\right)\\
+    &= -\sum_i p_i\cdot \log\left(\frac{k_i }{m}\right) = -\sum_i p_i\cdot \log\left(p_i\right)
+\end{align*}
+
+\subsubsection{Conclusion}
+
+Shannon's entropy is the only function that satisfies the 4 axioms. Since the first 3 axioms are essentially trivial, the secret of the entropy function is the grouping axiom. The mos important property of the entropy function.
+
+\section{Fundamental Inequalities}
+
+If $X$ is a random variable over $n$ elements,
+\begin{equation}\label{eq:fund_ineq}
+    0\leq H(X) \leq \log n 
+\end{equation}
+The first inequality is trivial and the second inequality comes by way of a convexity argument. The argument is $\log$ is a concave function and the second inequality follows by Jensen's inequality.
+
+In general, almost all inequalities that we will talk about are proved by a convexity argument. Almost all equalities are straight forward by definition.
+
+The intuition of (\ref{eq:fund_ineq}) is that uncertainty of $X$ equals number of bits needed to describe $X$ is at least $0$ and at most $\log n$.
+
+\subsection{Jensen Inequality}
+
+A concave function $f$: for every $t_1,t_2$ (in the interval of concavity) and every $0\leq \lambda \leq 1$,
+\[
+\lambda \cdot f(t_1) + (1-\lambda) \cdot f(t_2)\leq f\left(\lambda\cdot t_1 + \left(1-\lambda\right)\cdot t_2\right)
+\]
+More generally (but equivalent): for $t_1,\ldots, t_n$ and $0\leq \lambda_1,\ldots,\lambda_n\leq 1$, such that $\sum_i\lambda_i=1$,
+\[
+\sum_i \lambda_i f(t_i)\leq f\left(\sum_i \lambda_i t_i \right)
+\]
+And even more generally (but equivalent): for every random variable $X$,
+\[
+\mathbb{E}(f(X)) \leq f(\mathbb{E}(X))
+\]
+
+\subsection{Proof of the Second Inequality}
+
+We can write
+\[
+H(p_1,\ldots,p_n) = \sum_i P_i \log\frac{1}{P_i} \leq \log \left(\sum_i P_i \cdot \frac{1}{P_i}\right) = \log n
+\]
+$\log$ is concave because it's second derivative $-\frac{1}{x^2}$ is always negative. We used Jensen's inequality: for $t_1,\ldots, t_n$ and $0\leq \lambda_1,\ldots,\lambda_n\leq 1$, such that $\sum_i\lambda_i=1$,
+\[
+\sum_i \lambda_i f(t_i)\leq f\left(\sum_i \lambda_i t_i \right)
+\]
+
+\section{Joint Entropy}
+
+For random variables $X,Y$, we can write 
+\begin{align}
+    H(X,Y) &= H(P_{X,Y})=-\sum_{a,b}P\left(X=a,y=b\right)\log P\left(X=a,Y=b\right)\\
+    &=-\sum_{a,b} P(a,b)\log P(a,b) = - \mathbb{E}_{X,Y}\log P(X,Y)
+\end{align}
+In the same way, for random variables $X_1,\ldots, X_n$, we define $H(X_1,\ldots, X_n)$ as the entropy of the joint distribution of $X_1,\ldots,X_n$ as 
+\begin{equation}
+    H\left(X_1,\ldots, X_n\right) = -\mathbb{E}_{X_1,\ldots,X_n}\log P(X_1,\ldots,X_n)
+\end{equation}
+
+\section{Conditional Entropy}
+
+Intuitively, for random variables $X,Y$, the conditional entropy $H(X|Y)$ will be the uncertainty remained in $X$ after we see $Y$.
+
+For random variables $X,Y$, for every $b$, define 
+\begin{align*}
+    H(X| Y=b)&= H(P_{X|Y=b})\\
+    &= -\sum_a P\left(X=a | Y=b\right)\log P\left(X=a | Y=b\right)
+\end{align*}
+which is the entropy of the random variable $X$, conditioned on the event $Y=b$.
+
+\subsection{Example}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+& $X=0$ & $X=1$ \\ \hline
+$Y=0 $ & $1/4$ & $1/4$  \\ \hline
+$Y=1$ & $1/2$ & 0  \\ \hline
+\end{tabular}
+\caption{Joint Probability Distribution Table}
+\label{tab:joint_prob_dist}
+\end{table}
+
+From table (\ref{tab:joint_prob_dist}) get the following expressions
+\begin{itemize}
+    \item $H(X|Y=0)=H(1/2,1/2)=1$
+    \item $H(X|Y=1)=H(1,0)=0$
+\end{itemize}
+We can think of $H(X|Y)$ as the average of the two above.
+
+\subsection{Definition of Conditional Entropy}
+
+The definition is 
+\begin{align}
+    H(X|Y) &= \mathbb{E}_{Y\to b} H(X|Y=b)=\sum_b P(Y=b)\cdot H(X|Y=b)\\
+    &= -\sum_{a,b} P(X=a,Y=b)\log P(X=a|Y=b)
+\end{align}
+where the second equality is a consequence of the chain rule and the definition of $H(X| Y=b)$. We can also write 
+\begin{equation}
+    H(X|Y)= -\mathbb{E}_{X,Y}\log P(X|Y)
+\end{equation}
+We think of $H(X|Y)$ as the uncertainty that remained in $X$ after seeing $Y$.
+
+\subsubsection{Example}
+
+From table (\ref{tab:joint_prob_dist}), $P(X|Y)$ is $1/2$ with probability $1/2$ and $1$ with probability $1/2$. Hence, $H(X|Y)=\frac{1}{2}$.
+
+\end{document}
