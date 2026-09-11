@@ -1,0 +1,370 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb}
+\usepackage{pgfplots}
+
+\begin{document}
+
+\section{Introduction}
+
+Today we will be covering basic definitions, equalities, and inequalities of information theory. Perhaps it is the most important lecture.
+
+\section{Review}
+
+$X$ is a discrete random variable (finite number of states) and entropy is defined as 
+\[
+H(X) = -\sum_a P(X=a)\log P(X=a)=-\mathbb{E}_X \log P(X)
+\]
+Shannon's entropy is the only function that satisfies the grouping axiom and 3 adition, veru reasonable, axioms.
+
+If $X$ is a random variable over $n$ elements, then 
+\[
+0\leq H(X)\leq \log n 
+\]
+
+\subsection{Joint Entropy}
+
+For random variables $X,Y$ then 
+\[
+H(X,Y) = -\mathbb{E}_{X,Y} \log P(X,Y)
+\]
+and it generalizes over any number of variables
+\[
+H(X_1,\ldots,X_n) = -\mathbb{E}_{X_1,\ldots,X_n} \log P(X_1,\ldots,X_n)
+\]
+
+\subsection{Conditional Entropy}
+
+For random variables $X,Y$, then 
+\[
+H(X|Y) = \sum_a P(Y=b)\cdot H(X|Y=b)=- \mathbb{E}_{X,Y} \log P(X|Y)
+\]
+Intuitively, it is the uncertainty remains in $X$ that remains after seeing $Y$.
+
+\section{Fundamental Equalities and Inequalities}
+
+What can we say about the relations between:
+\[
+H(X),H(Y),H(X|Y)H(Y|X),H(X,Y)
+\]
+\subsection{Fundamental Inequality of Conditional Entropy}
+
+For random variables $X,Y$
+\[
+0\leq H(X|Y)\leq H(X)
+\]
+The first inequality is trivial, and the second is proved by Jensen inequality.
+
+Intuitively, the uncertainty remainded in $X$ after seeing $Y$ is smaller than the original uncertainty in $X$. The uncertainty can only decrease by revealing $Y$. Also the uncertainty is always larger than $0$.
+
+$H(X|Y)=H(X)$ if and only if $X,Y$ are independent. It's not hard but we will not prove.
+
+\subsubsection{Notable Example}
+
+Note that for specific $b$, it could be the case the $H(X|Y=b)$ could be larger than $H(X)$. The following table (\ref{tab:joint_prob_dist}) is a good example.
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+& $X=0$ & $X=1$ \\ \hline
+$Y=0 $ & $1/4$ & $1/4$  \\ \hline
+$Y=1$ & $1/2$ & 0  \\ \hline
+\end{tabular}
+\caption{Joint Probability Distribution Table}
+\label{tab:joint_prob_dist}
+\end{table}
+
+We have the following values
+\begin{enumerate}
+    \item $H(X|Y)=\frac{1}{2}$
+    \item $H(X|Y=0)=1$
+    \item $H(X)=H(\frac{3}{4},\frac{1}{4} )<1$
+\end{enumerate}
+
+\subsubsection{Proof of the Second Inequality}
+
+See the photos.
+
+\subsection{Chain Rule}
+
+The most beautiful formula 
+\[
+H(X,Y) =H(Y) + H(X|Y)
+\]
+It's very intuitive! The uncertainty in $(X,Y)$ is the uncertainty in $Y$ plus the uncertainty remaining in $X$ after revealing $Y$.
+
+It's a real treasure and is used many times in applications. 
+
+We could have defined $H(X|Y)$ by this formula 
+\[
+H(X|Y) = H(X,Y) - H(Y)
+\]
+The chain rule is the most important property of the entropy function.
+
+\subsubsection{Do we need to prove the chain rule?}
+
+The chain rule is just the grouping axiom!
+
+See the photo.
+
+But we never proved the grouping axiom, so we do need to prove it.
+
+\subsubsection{Proof of the Chain Rule}
+
+\begin{align*}
+    P(X,Y) &= P(Y)\cdot P(X|Y)\\
+    \log P(X,Y) &= \log P(Y) + \log P(X|Y)\\
+    \mathbb{E} \left[\log P(X,Y) \right]&= \mathbb{E}\left[\log P(Y)\right] + \mathbb{E}\left[\log P(X|Y)\right]\\
+    H(X,Y) &=H(Y) + H(X|Y)
+\end{align*}
+
+\subsubsection{Chain Rule for $X_1,\ldots,X_n$}
+For random variables $X_1,\ldots,X_n$ we have 
+\begin{align*}
+    H&(X_1,\ldots,X_n)=\\
+    &H(X_1) + H(X_2|X_1) + H(X_3|X_1,X_2) + \cdots + H(X_n|X_1,\ldots,X_{n-1})
+\end{align*}
+
+\subsection{Subadditivity}
+It's just 
+\[
+H(X),H(Y)\leq H(X,Y)\leq H(X) + H(Y)
+\]
+Equality in the second inequality if and only if $X,Y$ are independent.
+
+It's very intuitive! The uncertainty in $(X,Y)$ is more than the uncertainty in $X$ or $Y$, separately, but no more thant the sum of uncertainties as we can reveal $X$ and simultaneously reveal $Y$
+
+\subsubsection{Proof}
+
+Follows by:
+\begin{align*}
+    H(X,Y) &= H(Y) + H(X|Y) \quad \text{and}\quad 0\leq H(X|Y) \leq H(X)\\
+    H(X,Y) &= H(X) + H(Y|X) \quad \text{and}\quad 0\leq H(Y|X) \leq H(Y)\\
+\end{align*}
+
+The first inequality is quite straight forward. The second one follows from plugging $\leq H(X|Y) \leq H(X)$ into $H(X,Y) = H(Y) + H(X|Y)$.
+
+\subsubsection{Subadditivity for $X_1,\ldots, X_n$}
+
+\[
+H(X_1,\ldots,X_n)\leq \sum_i H(X_i)
+\]
+
+\subsection{Equalities and Inequalities for Conditional Entropy}
+
+All equalities and inequalities that we have learned (and more generally all equalities and inequalities that involve linear combinations of entropies) generalizes to conditional entropies.
+
+\subsubsection{Examples}
+
+\begin{itemize}
+    \item $H(X|Y,Z)\leq H(X|Z)$
+    \item $H(X,Y|Z) = H(Y|Z) + H(X|Y,Z)$
+    \item $H(X_1,\ldots,X_n|Z)= \cdots$ See photo.
+    \item $H(X,Y|Z) \leq H(X|Z) + H(X|Z)$
+    \item $H(X_1,\ldots, X_n| Z)\leq \sum_i H(X_i|Z)$
+\end{itemize}
+
+\subsubsection{Proof sketch}
+To prove 
+\begin{itemize}
+    \item $H(X|Y,Z)\leq H(X|Z)$
+    \item $H(X,Y|Z) = H(Y|Z) + H(X|Y,Z)$
+\end{itemize}
+It follows by 
+\[
+H(\cdot | Z) = \sum_c P(Z=c)\cdot H(\cdot | Z=c)
+\]
+where $\cdot$ stands for any of the above entropies of conditional entropies. So any equality or inequality that holds conditioned on each event $Z=c$ separately also holds when we take the expectation over all possibilities for $Z=c$.
+
+But we need to be careful when there are premises under which the equalities and inequalities are true.
+
+\section{Mutual Information}
+
+\subsection{Setup}
+
+How did Sir Walter Raleigh measure the weight of the smoke of a cigar?
+
+He weighted the cigar before the he smoked it and subtracted the weight of the ashes that remained after he smoked the cigar. The difference was the weight of the smoke.
+
+Scientifically, this is completely wrong.
+
+\subsection{Definition}
+
+$I(X;Y)=$ the information that $X$ gives on $Y$
+\[
+I(X;Y) = H(Y) - H(Y|X) \geq 0
+\]
+Remember, this is a definition!
+
+\subsection{Mutual Information is Symmetric}
+
+\begin{align*}
+    I(X;Y) &= H(Y) - H(Y|X)\\
+    &= H(Y) - \left(H(X,Y)-H(X)\right)\\
+    &= H(Y) + H(X) - H(X,Y)\\
+    &= I(Y;X) = H(X) - H(X|Y)
+\end{align*}
+The information that $Y$ gives on $X$ equals to the information that $X$ gives on $Y$. It's a bit counterintuitive, but the above holds and is very useful.
+
+\subsection{Some Simple Facts}
+
+\begin{itemize}
+    \item $I(X;Y)=0$ iff $X,Y$ are independent
+    \item $I(X;X)=H(X)$
+    \item $I(X;f(X))= H(f(X)) \leq H(X)$ for any (deterministic) function $f$
+    \item $I(X;Y,Z)\geq I(X;Y),I(X;Z)$
+\end{itemize}
+
+\subsection{Conditional Mutual Information}
+
+\begin{align*}
+    I(X;Y|Z) &= H(Y|Z) - H(Y|X,Z)\\
+    &= H(Y,Z) - H(Z)- \left(H(Y,X,Z) - H(X,Z)\right)\\
+    &= H(Y,Z) + H(X,Z) - H(Z) - H(Y,X,Z)\\
+    &= I(Y;X|Z)\geq 0
+\end{align*}
+
+As before, all equalities and inequalities (that involve linear terms) generalize to the case when conditioning on an additional random variable $Z$, as any such equality/inequality is an equality/inequality about entropies.
+
+\subsection{Chain Rule for Mutual Information}
+
+\begin{align*}
+    I(X_1,\ldots,X_n;Y) = I(X_1;Y) &+ I(X_2;Y|X_1) + I(X_3;Y|X_1,X_2)+\\
+    &\ldots + I(X_n;Y|X_1,X_2,\ldots, X_{n-1})
+\end{align*}
+and similarly, we can further condition everything on $Z$.
+
+\section{Concavity of the Entropy Function}
+
+Let $P_1=(P_{1,1},\ldots P_{1,m})$ and $P_2=(P_{2,1},\ldots P_{2,m})$ be two distribution on $m$ elements. Let $0\leq \lambda \leq 1$. Then,
+\[
+\lambda\cdot H(P_1) + (1-\lambda) \cdot H(P_2)\leq H(\lambda \cdot P_1 + (1-\lambda)\cdot P_2)
+\]
+
+\subsection{Proof}
+
+See the photo.
+
+It's essentially just a restatement of the fundamental inequality of conditional entropy $H(X|Y)\leq H(X)$.
+
+\section{Markov Chains}
+
+We say that $X\to Y\to Z$ is a Markov Chain if $P(Z|X,Y)=P(Z|Y)$, that is, for every $a,b,c$ (such that $P(X=a,Y=b)>0$)
+\[
+P(Z=c|X=a,Y=b)=P(Z=c|Y=b)
+\]
+Intuitively, $Y$ is generated from $X$ and independent random bits and then $Z$ is generated from $Y$ and independent random bits (without knowing $X$). Each arrow can be viewed as a communication channel or some data processing. $Y$ is a data processing of $X$ and $Z$ is a data processing of $Y$.
+
+By the chain rule for probabilities, we have,
+\begin{align*}
+    P&(X=a,Y=b,Z=c)=\\
+    & P(Y=b)\cdot P(X=a|Y=b)\cdot P(Z=c|X=a,Y=b)
+\end{align*}
+Thus, $P(Z=c|X=a,Y=b)=P(Z=c|Y=b)$ is equivalent to 
+\[
+P(X=a,Y=b,Z=c)=P(Y=b)\cdot P(X=a|Y=b)\cdot P(Z=c|Y=b)
+\]
+for every $a,b,c$. This is an equality, so if we have a Markov chain we get $P(Z=c|X=a,Y=b)=P(Z=c|Y=b)$, and if we have $P(Z=c|X=a,Y=b)=P(Z=c|Y=b)$, we have a Markov chain.
+
+Thus,
+\begin{enumerate}
+    \item $Z\to Y\to X$ is also a Markov Chain 
+    \item Conditioned on $Y$, we have that $X,Z$ are independent
+    \item $I(X;Z|Y)=0$
+\end{enumerate}
+
+\subsection{Data Processing Inequality}
+
+If $X\to Y\to Z$ is a Markov Chain, then 
+\[
+I(X;Z) \leq I(X;Y)
+\]
+or equivalently
+\[
+H(X|Z) \geq H(X|Y)
+\]
+The equivalence is because 
+\begin{itemize}
+    \item $I(X;Z)=H(X)-H(X|Z)$
+    \item $I(X;Y)=H(X)-H(X|Y)$
+\end{itemize}
+The theorem is very intuitive in the data processing interpretation: if we further process the data, we reduce the information that it gives about the source.
+
+\subsubsection{Proof}
+
+If $X\to Y\to Z$ is a Markov Chain, then $Z\to Y\to X$ is also a Markov Chain. We can write 
+\begin{align*}
+    P(X|Y,Z) &= P(X|Y)\\
+    \mathbb{E}\left[\log P(X|Y,Z)\right] &= \mathbb{E}\left[\log P(X|Y)\right]\\
+    H(X|Y,Z) &= H(X|Y)
+\end{align*}
+Hence,
+\[
+H(X|Z) \geq H(X|Y,Z) = H(X|Y)
+\]
+
+\section{Relative Entropy}
+
+Suppose $p=\left(p_1,\ldots, p_m\right)$ and $q=\left(q_1,\ldots, q_m\right)$ are two distributions on $m$ elements. The relative entropy\footnote{We will prove that this is always equal to or greater than 0 via Jensen inequality.} is 
+\[
+\operatorname{D}\left(p\| q\right)=\sum_i p_i\log \left(\frac{p_i}{q_i}\right)\geq 0
+\]
+We read it as ``D'' of ``$p$'' relative to ``$q$''.
+
+Relative entropy may be infinite. We can prove the inequality by a convexity argument. When $q$ is uniform, it is the same as Shannon Entropy (up to a sign and an additive constant). We will learn later in the course what $\operatorname{D}\left(p\| q\right)$ really is.
+
+\section{Some exotic entropy functions}
+
+\subsection{Entropy of a Random Variable over the Integers}
+
+Let $X$ be a discrete random variables (possibly infinite number of states), say over the integers 
+\[
+H(X)=-\sum_{i=-\infty}^{\infty}P(X=i)\log P(X=i)=-\sum_i P_i \log P_i
+\]
+as in the finite case. The sum may be infinite, but otherwise all equalities and inequalities generalize.
+
+\subsection{Entropy of a Continuous Random Variable}
+
+If $X$ is a continuous random variable, we define 
+\[
+H(X) = -\int f(x)\log f(x) \, dx
+\]
+where $f(x)$ is the probability density function (in analogy to the finite case). We assume that $X$ has a ``nice'' probability density function and that the integral is well defined. This is also called Differential Entropy. It may be negative. Equalities generalize, \textit{but inequalities not necessarily}.
+
+\subsubsection{Differential Entropy may be Negative}
+
+Note that $H(X)$ may be infinite, and also negative. For example $f(x)=\frac{1}{a}$ on the interval $[0,a]$. Then
+\[
+-\int_0^a f(x)\log f(x)\, dx = \log a
+\]
+which is negative when $a< 1$. This destroys all inequalities (but equalities remain the same).
+
+\subsection{Relative Entropy in the Continuous Case}
+
+If $f,g$ are sufficiently nice probability density functions 
+\[
+\operatorname{D}(f\| g)=\int f(x)\log\left(\frac{f(x)}{g(x)}\right)\, dx >0
+\]
+
+\section{Approximating Binomial Coefficients (informal)}
+
+Let $k\leq n$ be integers. Let $p=\frac{k }{n }$. We have 
+\[
+\binom{n }{k }=\frac{n!}{k!\cdot \left(n-k\right)!}
+\]
+Stirling's approximation is $\ln(m!)\approx m\ln m-m$. Thus,
+\[
+\ln\binom{n }{k }\approx \left(n\ln n -n\right)- \left(k\ln k -k\right) - \left(\left(n-k\right)\ln\left(n-k\right)-\left(n-k\right)\right)
+\]
+which then can be written as 
+\[
+\ln\binom{n }{k }\approx n\ln n -k\ln k - \left(n-k\right)\ln \left(n-k\right) = -k \ln \left(\frac{k}{n}\right)\cdots
+\]
+
+See the photo.
+
+\subsection{Approximating Multinomial Coefficients}
+
+See the photo.
+
+
+\end{document}
