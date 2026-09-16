@@ -1,6 +1,7 @@
 \documentclass{article}
 \usepackage{amsmath, amssymb}
-\usepackage{pgfplots}
+\usepackage{array}
+\usepackage{xcolor}
 
 \begin{document}
 
@@ -81,8 +82,18 @@ We have the following values
 \end{enumerate}
 
 \subsubsection{Proof of the Second Inequality}
-
-See the photos.
+The idea is to rework $H(X|Y)$ to get it into a state where we can apply Jensen's inequality, and then work back to $H(X)$
+\begin{align*}
+    H(X|Y) &= - \sum_{a,b}P(X=a,Y=b)\log P(X=a| Y=b)\\
+    &= -\sum_{a,b} P(X=a,Y=b)\log\frac{P(X=a,Y=b)}{P(Y=b)} \qquad\text{via the probability chain rule}\\
+    &= \sum_{a,b}P(X=a,Y=b) \log\frac{P(Y=b)}{P(X=a,Y=b)}\\
+    &= \sum_{a,b} P(X=a)\frac{P(X=a,Y=b)}{P(X=a)} \log\frac{P(Y=b)}{P(X=a,Y=b)}\\
+    &= \sum_a P(X=a) \sum_b \frac{P(X=a,Y=b)}{P(X=a)}\log\frac{P(Y=b)}{P(X=a,Y=b)}\\
+    &\leq \sum_a  P(X=a) \log \left(\sum_b \frac{P(X=a,Y=b)}{P(X=a)}\cdot \frac{P(Y=b)}{P(X=a,Y=b)}\right) \text{JENSEN}\\
+    &= \sum_a P(X=a) \log\left(\sum_b \frac{P(Y=b)}{P(X=a)} \right)\\
+    &=\sum_a P(X=a) \log\left(\frac{1}{P(X=a)} \right)\\
+    &= -\sum_a P(X=a)\log P(X=a)=H(X)
+\end{align*}
 
 \subsection{Chain Rule}
 
@@ -98,14 +109,32 @@ We could have defined $H(X|Y)$ by this formula
 \[
 H(X|Y) = H(X,Y) - H(Y)
 \]
-The chain rule is the most important property of the entropy function.
+The chain rule is the most important property of the entropy function!
 
 \subsubsection{Do we need to prove the chain rule?}
 
 The chain rule is just the grouping axiom!
 
-See the photo.
-
+We can visualize the joint distribution of $X,Y$ as
+\[
+\renewcommand{\arraystretch}{1.4}
+\begin{array}{cc}
+ & \boldsymbol{X} \\[4pt]
+\boldsymbol{Y} &
+\begin{array}{|ccc|c|}
+\hline
+\color{blue}p_{1,1} & \cdots & \color{blue}p_{1,n} & \color{purple}q_1 \\
+\vdots & \ddots & \vdots & \vdots \\
+\color{blue}p_{n,1} & \cdots & \color{blue}p_{n,n} & \color{purple}q_n \\
+\hline
+\end{array}
+\end{array}
+\]
+By grouping the rows,, we have
+\begin{gather*}
+    H\left(p_{1,1},\ldots,p_{n,n}\right) = H\left(q_1,\ldots, q_n\right) + \sum_{i=1 }^{n}q_i \cdot H\left(\frac{p_{i,1}}{q_i},\ldots,\frac{p_{i,n}}{q_i}\right)\\
+    H(X,Y)=H(Y) + H(X|Y)
+\end{gather*}
 But we never proved the grouping axiom, so we do need to prove it.
 
 \subsubsection{Proof of the Chain Rule}
@@ -138,10 +167,10 @@ It's very intuitive! The uncertainty in $(X,Y)$ is more than the uncertainty in 
 Follows by:
 \begin{align*}
     H(X,Y) &= H(Y) + H(X|Y) \quad \text{and}\quad 0\leq H(X|Y) \leq H(X)\\
-    H(X,Y) &= H(X) + H(Y|X) \quad \text{and}\quad 0\leq H(Y|X) \leq H(Y)\\
+    H(X,Y) &= H(X) + H(Y|X) \quad \text{and}\quad 0\leq H(Y|X) \leq H(Y)
 \end{align*}
 
-The first inequality is quite straight forward. The second one follows from plugging $\leq H(X|Y) \leq H(X)$ into $H(X,Y) = H(Y) + H(X|Y)$.
+The first inequality is quite straight forward since $0\leq H(X|Y),H(Y|X)$. The second one follows from plugging $ H(X|Y) \leq H(X)$ into $H(X,Y) = H(Y) + H(X|Y)$.
 
 \subsubsection{Subadditivity for $X_1,\ldots, X_n$}
 
@@ -158,8 +187,11 @@ All equalities and inequalities that we have learned (and more generally all equ
 \begin{itemize}
     \item $H(X|Y,Z)\leq H(X|Z)$
     \item $H(X,Y|Z) = H(Y|Z) + H(X|Y,Z)$
-    \item $H(X_1,\ldots,X_n|Z)= \cdots$ See photo.
-    \item $H(X,Y|Z) \leq H(X|Z) + H(X|Z)$
+    \item \begin{align*}
+        H(X_1,\ldots,X_n|Z)&= H(X_1|Z) + H(X_2|X_1, Z) + H(X_3|X_2,X_1,Z)+\\
+        & \cdots + H(X_n|X_1,\ldots,X_{n-1},Z)
+    \end{align*}
+    \item $H(X,Y|Z) \leq H(X|Z) + H(Y|Z)$
     \item $H(X_1,\ldots, X_n| Z)\leq \sum_i H(X_i|Z)$
 \end{itemize}
 
@@ -177,6 +209,48 @@ where $\cdot$ stands for any of the above entropies of conditional entropies. So
 
 But we need to be careful when there are premises under which the equalities and inequalities are true.
 
+\subsubsection{A Word of Caution: Equalities Are Fragile}
+
+The averaging argument shows that any \emph{universal} law of entropy --- one
+that holds for every joint distribution, with no extra assumptions, such as
+subadditivity $H(A,B)\leq H(A)+H(B)$ or monotonicity $H(A)\leq H(A,B)$ ---
+automatically generalizes to its conditional version. This is because such a
+law applies slice-by-slice to each conditional distribution $P(\cdot \mid Z=c)$,
+and inequalities (as well as equalities) are preserved under taking a
+nonnegative-weighted average over $c$.
+
+However, an \emph{equality} that we observe for a particular distribution is
+often not itself a universal law, but rather the \emph{boundary case} of a
+universal inequality, attained only under some structural premise on the
+distribution (e.g.\ independence). Such equalities do \emph{not} automatically
+survive conditioning, because the premise that produced them may fail to hold
+conditionally, even though it held unconditionally.
+
+\paragraph{Example.} Let $X,Y\sim\mathrm{Bernoulli}(1/2)$ be i.i.d., and let
+$Z = X\oplus Y$. Then $X\perp Y$, so subadditivity is tight:
+\[
+H(X,Y) = 2 = H(X) + H(Y).
+\]
+But conditioning on $Z$ destroys this independence: knowing $Z$ and $Y$
+determines $X$ exactly, and likewise for $X,Y$ swapped, so
+\[
+H(X,Y\mid Z) = 1, \qquad H(X\mid Z) + H(Y\mid Z) = 1+1 = 2.
+\]
+Subadditivity is still respected ($1\leq 2$), but the equality has become a
+\emph{strict} inequality. The premise $X\perp Y$ held unconditionally but
+fails conditionally on $Z$ (in fact, $X$ and $Y$ become fully dependent given
+$Z$).
+
+\paragraph{Heuristic.} Whenever an identity you've derived is really the
+equality case of some universal inequality, ask \emph{what property of the
+distribution made it tight} (independence, a Markov relation, a deterministic
+functional relation, etc.). That property --- not the equality itself --- is
+what must be checked \emph{conditionally on $Z=c$ for every $c$} before you
+can assume the conditional equality still holds. The inequality is robust
+because it follows from the definitions alone; the equality is fragile
+because it depends on a fact about the specific distribution, and that fact
+need not survive conditioning.
+
 \section{Mutual Information}
 
 \subsection{Setup}
@@ -185,7 +259,7 @@ How did Sir Walter Raleigh measure the weight of the smoke of a cigar?
 
 He weighted the cigar before the he smoked it and subtracted the weight of the ashes that remained after he smoked the cigar. The difference was the weight of the smoke.
 
-Scientifically, this is completely wrong.
+Scientifically, this is completely wrong. However, it's a nice way to think about mutual information.
 
 \subsection{Definition}
 
@@ -193,7 +267,9 @@ $I(X;Y)=$ the information that $X$ gives on $Y$
 \[
 I(X;Y) = H(Y) - H(Y|X) \geq 0
 \]
-Remember, this is a definition!
+Remember, this is a definition! And as a reminder, we know $I(X;Y)\geq 0$ because it follows from the fundamental inequality of conditional entropy.
+
+The intuitive way to think about mutual information is as the reduction of uncertainty of $Y$ due to knowledge about $X$.
 
 \subsection{Mutual Information is Symmetric}
 
@@ -242,9 +318,46 @@ Let $P_1=(P_{1,1},\ldots P_{1,m})$ and $P_2=(P_{2,1},\ldots P_{2,m})$ be two dis
 
 \subsection{Proof}
 
-See the photo.
+Consider the following joint distribution of $X,Y$
+\[
+\renewcommand{\arraystretch}{1.6}
+\begin{array}{cc}
+& \boldsymbol{X} \\[4pt]
+\boldsymbol{Y} &
+\begin{array}{|c|c|c|}
+\hline
+\color{blue}\lambda \cdot p_{1,1} & \cdots & \color{blue}\lambda \cdot p_{1,m} \\
+\hline
+\color{blue}(1-\lambda)\cdot p_{2,1} & \cdots & \color{blue}(1-\lambda)\cdot p_{2,m} \\
+\hline
+\end{array}
+\end{array}
+\]
+$Y\in\left\{1,2\right\}$ is such that $P(Y=1)=\lambda$ and $P(Y=2)=1-\lambda$. $X\in\left\{1,\ldots,m\right\}$ is such that $P_{X|Y=1}=P_1$ and $P_{X|Y=2}=P_2$. Then we have
+\begin{gather*}
+    \lambda\cdot H(P_1) + \left(1-\lambda\right) \cdot H(P_2)=H(X|Y)\\
+    H(\lambda\cdot P_1 + \left(1-\lambda\right)\cdot P_2)=H(X)
+\end{gather*}
 
 It's essentially just a restatement of the fundamental inequality of conditional entropy $H(X|Y)\leq H(X)$.
+
+\subsubsection{More explicitly}
+
+For $\lambda\cdot H(P_1) + \left(1-\lambda\right) \cdot H(P_2)=H(X|Y)$, the logic is to perform some substitutions and then get the conditional entropy 
+\begin{gather*}
+    \lambda\cdot H(P_1) + \left(1-\lambda\right) \cdot H(P_2)\\
+    P(Y=1)\cdot H(P_1)+ P(Y=2) \cdot H(P_2)\\
+    P(Y=1)\cdot H(X|Y=1)+ P(Y=2) \cdot H(X|Y=2)\\
+    \sum_{i\in \left\{1,2\right\}}P(Y=i)\cdot H(X|Y=i)=H(X|Y)
+\end{gather*}
+For $H(\lambda\cdot P_1 + \left(1-\lambda\right)\cdot P_2)=H(X)$, the logic is substitute, then apply the chain rule, and then marginalize
+\begin{gather*}
+    H(\lambda\cdot P_1 + \left(1-\lambda\right)\cdot P_2)\\
+    H(P(Y=1) \cdot P_1 + P(Y=2)\cdot P_2)\\
+    H(P(Y=1) \cdot P_{X|Y=1} + P(Y=2)\cdot P_{X|Y=2})\\
+    H\left(P(X,Y=1)+P(X,Y=2)\right)\\
+    H\left(P(X)\right)=H(X) \qquad\text{Just a notational change}
+\end{gather*}
 
 \section{Markov Chains}
 
@@ -271,6 +384,29 @@ Thus,
     \item Conditioned on $Y$, we have that $X,Z$ are independent
     \item $I(X;Z|Y)=0$
 \end{enumerate}
+
+\subsubsection{Deriving points 1 and 2}
+
+Points 1 and 2 are quite deep and not always immediate. Here is some justification.
+
+\paragraph{Point 2: Conditional independence of $X,Z$ given $Y$.}
+Dividing the factorization by $P(Y=b)$ gives, for every $a,b,c$,
+\begin{align*}
+P(X=a,Z=c\mid Y=b) &= \frac{P(X=a,Y=b,Z=c)}{P(Y=b)} \\
+&= \frac{P(Y=b)\cdot P(X=a\mid Y=b)\cdot P(Z=c\mid Y=b)}{P(Y=b)} \\
+&= P(X=a\mid Y=b)\cdot P(Z=c\mid Y=b).
+\end{align*}
+That is, $P(X,Z\mid Y) = P(X\mid Y)\cdot P(Z\mid Y)$, so conditioned on $Y$, $X$ and $Z$ are independent.
+
+\paragraph{Point 1: The reverse chain $Z\to Y \to X$.}
+By the chain rule for probabilities, $P(Y=b,Z=c) = P(Y=b)\cdot P(Z=c\mid Y=b)$
+for every $b,c$. Dividing the original factorization by this gives, for every $a,b,c$,
+\begin{align*}
+P(X=a\mid Y=b,Z=c) &= \frac{P(X=a,Y=b,Z=c)}{P(Y=b,Z=c)} \\
+&= \frac{P(Y=b)\cdot P(X=a\mid Y=b)\cdot P(Z=c\mid Y=b)}{P(Y=b)\cdot P(Z=c\mid Y=b)} \\
+&= P(X=a\mid Y=b).
+\end{align*}
+That is, $P(X\mid Y,Z) = P(X\mid Y)$, which is exactly the defining condition for $Z\to Y\to X$ to be a Markov chain.
 
 \subsection{Data Processing Inequality}
 
