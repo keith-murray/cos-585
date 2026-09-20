@@ -16,3 +16,8 @@ wheels/
 *.fls 
 *.log
 
+# Mac files
+.DS_Store
+
+# Course files
+homework/
