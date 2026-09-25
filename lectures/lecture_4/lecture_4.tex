@@ -1,0 +1,381 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{tikz}
+
+\begin{document}
+
+\section{Introduction}
+We are looking at three distributions today:
+\begin{enumerate}
+    \item Random distribution
+    \item Normal distribution
+    \item Boltzmann distribution
+\end{enumerate}
+Why are these distributions so common? What is common to all these distributions?
+
+But first, what is the Boltzmann distribution.
+
+\section{Boltzmann distribution}
+
+Suppose the we have a physical system that can take $m$ states $\left\{1,\ldots,m\right\}$ with energies $E_1,\ldots,E_m$.Let $X$ be a random variable that represents the state of the system.
+
+\subsection{Some preliminaries}
+
+Missed it.
+
+\subsection{The equation}
+
+The distribution is 
+\[
+\operatorname{P}\left(X=i\right) = \frac{1}{z}\cdot e^{-\beta E_i}
+\]
+where $\beta >0$ is a parameter (inverse of the temperature) and $Z=\sum_{i=1 }^{m }e^{-\beta E_i}$ is a normalization factor (partition function).
+
+This is the standard distribution of statistical mechanics. All systems in equilibrium have this distribution.
+
+The probability is larger for states with lower energy. When the temperature is very large ($\beta\to 0$), the distribution is close to uniform. When the temperature is very low ... missed it.
+
+\subsection{Examples}
+
+\begin{itemize}
+    \item Maxwell Boltzmann Distribution for velocity of particles.
+    \item Density of the atmosphere as a function of height.
+\end{itemize}
+
+\section{Entropy in Thermodynamics}
+
+The notion of entropy was originated in thermodynamics. It has two different interpretations. 
+
+\textbf{Original interpretation}: The amount of energy, in a physical system, that is no longer available for doing mechanical work. The energy that cannot be used. \textbf{Example}: When there is a hot bar and a cold bar, the temperature gap can be used for doing mechanical work (heat engine). If we connect the bars, the temperatures will eventually equalize. The total energy is conserved but is no longer available for doing mechanical work (the Entropy increased).
+
+\textbf{Second interpretation (similar to Shannon)}: The amount of information that we don't know about a physical system.
+
+\subsection{History of the Notion of Entropy in Thermodynamics}
+
+\textbf{Carnot (1824)}: Studied heat engines and showed that there is a theoretical upper limit on the efficiency of a heat engine. There is a theoretical upper limit on the amount of energy of a heat source, that can be used.
+
+\textbf{Clausius (1865)}: Coined the term Entropy. His definition of entropy (based on Carnot's work) was 
+\[
+S=\int \frac{dQ}{T}
+\]
+where $dQ$ is the change in heat and $T$ is the temperature. This definition is mysterious and seems very different than Shannon's entropy.
+
+\textbf{Boltzmann (1877)}: His definition was 
+\[
+S=\text{const}\cdot \log\Omega
+\]
+where $\Omega$ is the number of states that a system can take (after measuring all the macro parameters, such as volume, pressure, and temperature).
+
+Can be viewed as the amount of information that we don't know about the system. Boltzmann proved that this is (approximately) the same as Clausius' definition.
+
+The logarithm of the number of states is Shannon's entropy of the uniform distribution. In statistical mechanics, this approximation is extremely good (asymptotic equipartition theorem applies\footnote{So that's why we talked about it!}), so this is already very close to Shannon's definition.
+
+\subsubsection{Gibbs' Entropy}
+
+Following Boltzmann:
+\[
+S= -\text{const}\cdot \sum_i p_i\log p_i
+\]
+... and I missed the rest.
+
+\subsubsection{Von Neumann Entropy (1932)}
+
+His definition for entropy of a quantum system was 
+\[
+S(\rho) = -\operatorname{Tr}\left(\rho \log \rho\right)
+\]
+where $\rho$ is a quantum density matrix. This is the same as Shannon's entropy, when the matrix is diagonal (when the system is classical the matrix is diagonal).
+
+\subsection{Two Quotations}
+
+\textbf{Feynman}: In fact, the science of thermodynamics began with an analysis, by the great engineer Sadi Carnot, of the problem of how to build the best and most efficient engine, and this constitutes one of the few famous cases in which engineering has contributed fundamentally to physical theory. Another example that ... and I missed it.
+
+\textbf{Shannon}: My greatest concern was what to call it. I thought of calling it `information', but the word was overly used, so I decided to call it `uncertainty'. When I discussed it with Jon von Neumann, he had a better idea. Von Neumann told me ``You should call it entropy, for two reasons. In the first place your uncertainty function has been used in statistical mechanics under that name, so it already ... and I missed it''
+
+\subsection{Second Law of Thermodynamics}
+
+The entropy of an isolated physical system never decreases (over time).
+
+This is related to the principle that heat doesn't flow from cold regions to hot regions.
+
+If we wait enough time, until the system reaches equilibrium, we get a system in a state of maximum entropy.
+
+Sometimes there are constraints and we will find the system in a state of maximum entropy under these constraints.
+
+This suggest that distributions that are common in nature are in a state of maximal entropy.
+
+\section{Uniform distribution}
+
+The distribution with maximal entropy (among all distributions).
+
+\section{Normal distribution}
+
+Probability density function that is 
+\[
+f(x) = \frac{1}{\sqrt{2 \pi}} e^{-\frac{x^2}{2}}
+\]
+Why is this distribution so common?
+
+\subsection{Central Limit Theorem}
+
+When we add independent random variables and normalize, the distribution fo the sum converges to the normal distribution.
+
+If $X_1,\ldots, X_n$ are i.i.d, and $\mathbb{E}\left(X_i\right)=0$, $\operatorname{Var}\left(X_i\right)=1$, then 
+\[
+\frac{X_1 + \cdots + X_n}{\sqrt{n}} \to \mathcal{N}\left(0,1\right)
+\]
+as $n\to\infty$. The convergence is \textit{in distribution} (convergence of the cumulative distribution function). That is, for sufficiently large $n$, the distribution of $\frac{X_1 + \cdots + X_n}{\sqrt{n}}$ is close to normal.
+
+But why the convergence is to the normal distribution? What is so special about it?
+
+\subsection{Expectation and Variance}
+
+Observe that 
+\[
+\mathbb{E}\left(\frac{X_1 + \cdots + X_n}{\sqrt{n}}\right)=0, \qquad \operatorname{Var}\left(\frac{X_1 + \cdots + X_n}{\sqrt{n}}\right)=1
+\]
+so if it converges, it must be to a distribution with expectation 0 and variance 1. But why the normal distribution?
+
+\subsection{The Secret of the Normal Distribution}
+
+Among all distributions with expectation 0 and variance 1, the normal distribution is the one with maximal entropy! This is a striking property of the Normal distribution.
+
+The normal distribution and the central limit theorem were known much earlier but the most striking property of that distribution was only discovered after the notion of Entropy was developed.
+
+Why the normal distribution? Because, when we add random variables and normalize, we keep increasing the entropy until the distribution converges to the distribution with maximal entropy, the normal distribution.
+
+Artstein, Ball, Barthe, Naor: The entropy of $\frac{X_1 + \cdots + X_n}{\sqrt{n}}$ increases in each step and converges to the entropy of the normal distribution.
+
+\subsection{Theorem}
+
+Let $f(x)=\frac{1}{\sqrt{2\pi}}e^{}-\frac{x^2}{2}$ and let $g(x)$ be an arbitrary density function with expectation 0 and variance 1. We now only need a couple of properties
+\begin{gather*}
+    \int f(x) \, dx = \int g(x) \, dx = 1\qquad\text{Because it is a density function}\\
+    \int f(x)x^2 \, dx = \int g(x)x^2\, dx =1 \qquad\text{Just a restatement about variance}
+\end{gather*}
+Then 
+\[
+-\int g(x)\log g(x)\, dx \leq -\int f(x)\log f(x)\, dx
+\]
+would mean that the gaussian has maximal entropy. We assume that all integral exist. We will prove 
+\[
+-\int g(x)\log g(x)\, dx \leq -\int g(x)\log f(x)\,dx = -\int f(x)\log f(x)\, dx
+\]
+
+\subsubsection{Proof}
+
+To prove 
+\[
+-\int g(x)\log g(x)\, dx \leq -\int g(x)\log f(x)\,dx 
+\]
+we just note that this follows from
+\[
+0 \leq \int g(x) \log \frac{g(x)}{f(x)}\, dx
+\]
+where $f(x)> 0$ by definition. We proved this in the homework. It's just a concavity argument.
+
+To prove 
+\[
+-\int g(x)\log f(x)\,dx = -\int f(x)\log f(x)\, dx
+\]
+we just substitute in $f(x)$. Let's first deal with the left hand side. We can write 
+\begin{align*}
+    -\int g(x)\log f(x)\,dx &= -\int g(x)\left(\log \frac{1}{\sqrt{2\pi}}-\frac{\log e}{2}x^2\right)\\
+    &= -\log \frac{1}{\sqrt{2\pi}} \cdot \left(\int g(x)\, dx\right) + \frac{\log e}{2}\cdot \int g(x)x^2 \, dx\\
+    &= \log \sqrt{2\pi} + \frac{\log e}{2}
+\end{align*}
+notice that we can do the same for the right hand side since 
+\begin{gather*}
+    \int f(x) \, dx = \int g(x) \, dx = 1\qquad\text{Because it is a density function}\\
+    \int f(x)x^2 \, dx = \int g(x)x^2\, dx =1 \qquad\text{Just a restatement about variance}
+\end{gather*}
+
+\section{Back to the Boltzmann distribution}
+
+\subsection{The Secret of Boltzmann distribution}
+
+The expectation of the energy of the system (Boltzmann distribution) is 
+\[
+E = \sum_i \operatorname{P}\left(X=i\right)\cdot E_i
+\]
+By conservation of energy, if the system is isolated its energy remains constant. By the second law of thermodynamics, the entropy of the system keeps increasing, until it gets (in equilibrium) to a distribution with maximal entropy.
+
+For every $E$, among all distributions $\left(p_1,\ldots,p_m\right)$, with expectation of energy $E$, that is, $\sum_i p_i E_i=E$, Boltzmann distribution is the one with maximal entropy.
+
+\subsection{Example}
+
+Many particles, each of which can be in state $\left\{1,\ldots, m\right\}$ with energies $E_1,\ldots, E_m$, interact with each other (collide, etc.)
+
+By conservation of energy, if the system is isolated its total energy remains constant in time. By the second law of thermodynamics, the entropy of the system keeps increasing, until it gets (in equilibrium) to a distribution with maximal entropy. The probability for each particle to be in each state is then given by Boltzmann distribution.
+
+\textbf{Example}: Maxwell Boltzmann Distribution for velocity of particles.
+
+\subsection{Theorem}
+
+Let $p=\left(p_1,\ldots,p_m\right)$ be the Boltzmann distribution: $p_i=\frac{1}{Z}\cdot e^{-\beta E_i}$, where $\beta >0$ and $Z=\sum_i e^{-\beta E_i}$. Let $E=\sum_i p_i E_i$.
+
+Let $q=\left(q_1,\ldots,q_m\right)$ be any distribution such that $\sum_i q_i E_i = E$.
+
+Then we need to prove 
+\[
+-\sum q_i \log q_i \leq -\sum q_i \log p_i = -\sum p_i \log p_i
+\]
+
+\subsubsection{Proof}
+
+The inequality is proved in the homework. The equality is proved via the following:
+\begin{align*}
+    -\sum q_i \log p_i &= -\sum q_i \left(\log \frac{1}{z}-\log e\cdot \beta E_i\right)\\
+    &= \log Z + \log e\cdot \beta E
+\end{align*}
+This is a constant that is independent of $q$ and hence we get the same expression when we replace $q$ with $p$.
+
+\section{Maximum Entropy by Lagrange Multipliers}
+
+Suppose that we didn't know about Boltzmann distribution and we wanted to find $p=$ ... and I missed it
+
+\subsection{Lagrange Multipliers}
+
+Maximize $f(x_1,\ldots,x_m)$ (say, over a convex set), subject to $g_1(x_1,\ldots,x_m)=0$ and $g_2\left(x_1,\ldots,x_m\right)=0$. Assumption: $f,g_1,g_2$ are ``sufficiently nice'' and the domain is ``sufficiently nice''.
+
+\subsubsection{Theorem}
+
+\textbf{If} the maximum of $f(x_1,\ldots,x_m)$ subject to $g_1(x_1,\ldots,x_m)=0$ and $g_2\left(x_1,\ldots,x_m\right)=0$ is obtained in the interior (of a convex set), then there exist $\lambda_1,\lambda_2$ such that for every $i$
+\[
+\frac{\partial f }{\partial x_i} = \lambda_1 \frac{\partial g_1}{\partial x_i} + \lambda_2 \frac{\partial g_2}{x_i}
+\]
+
+\subsection{Back to proof}
+If the maximum of $f(x_1,\ldots,x_m)$ subject to $g_1(x_1,\ldots,x_m)=0$ and $g_2\left(x_1,\ldots,x_m\right)=0$ is obtained in the interior (of a convex set), then there exist $\lambda_1,\lambda_2$ such that for every $i$, $\frac{\partial f }{\partial x_i} = \lambda_1 \frac{\partial g_1}{\partial x_i} + \lambda_2 \frac{\partial g_2}{x_i}$. 
+
+Maximize $H\left(p_1,\ldots, p_m\right)$ subject to $\sum_i p_i=1$ and $\sum_i p_i E_i=E$.
+
+There exist $\lambda_1,\lambda_2$ such that for every $i$
+\begin{align*}
+    \frac{\partial H}{\partial p_i} &= \lambda_1 E_i + \lambda_2\\
+    -\log p_i - \frac{1}{\ln 2} &= \lambda_1 E_i + \lambda_2\\
+    \log p_i &= \text{const} - \lambda_1 E_i\\
+    p_i &= \text{const}\cdot e^{-\lambda_1 E_i}
+\end{align*}
+
+\subsubsection{A note from Ran}
+
+Prof. Ran is arguing that the lagrange theorem is a necessary, not a sufficient condition? We still need to prove that the entropy function is the maximal (which we did previously) or to prove concavity (already did in previous lecture).
+
+\section{Problem Set 2, Question 2}
+
+700 people went to a fair. Each person bought either 2 ballons or 1 ballon or 0 ballons. Altogether, 400 ballons were bought.
+
+\textbf{Question:} How many people bought 2 ballons?
+
+This is not a good question, it's underdetermined.
+
+\subsection{Jaynes' Maximum Entropy Principle}
+
+\textbf{MEP}: If a system satisfies some known constraints, but its exact distribution is unknown, the most reasonable assumption is that the distribution is the one with maximal entropy among all the distributions that satisfy the constraints.
+
+With this principle, the problem is well posed.
+
+There are three justifications for the maximum entropy principle:
+\begin{enumerate}
+    \item Mathematical justification: Sometimes mathematical operations increase entropy, under some constraints
+    \item Physical justification: Second law of thermodynamics
+    \item Philosophical justification: The assumption that assumes the least about the distribution. The least biased distribution.
+\end{enumerate}
+MEP is viewed by admirers as a general rule for statistical inference, used in many places, but its generality remained controversial.
+
+\subsection{Justifications of the Maximum Entropy Principle}
+\begin{itemize}
+    \item Shore-Johnson: Axiomatic justification (when the set of distribution that satisfy the constraints is convex)
+    \item Grunwald and Dawid: Game theoretic justification (when the set of distributions that) ... missed the rest
+\end{itemize}
+
+\subsection{MEP: Shore-Johnson: Axiomatic Justification}
+
+Let $p=\left(p_1,\ldots,p_m\right)$ be an unknown underlying distribution. Let $D$ be the set of all distributions that satisfy all constraints (assumed to be convex). What would be the ``best'' estimate for the distribution $p$, under the assumption $p\in D$.
+
+\textbf{The Setup (Assumption)}: The ``best'' estimate is given by the maximization of some function $F\left(p_1,\ldots,p_m\right)$ over the domain $D$
+\[
+\arg\max_{p\in D} F(p)
+\]
+Justification: If two distributions satisfy the constraints then which one of them is better shouldn't depend on the constraints (not fully convincing)
+
+\textbf{Shore-Johnson Theorem}: Any function $F$ that satisfies several ``reasonable'' axioms is equivalent to Shannon's entropy $H$ in the sense that the maximums of $F$ and $H$ are the same on any convex set.
+
+\subsection{MEP: Wallis' Justification}
+
+Assume that we have a set of constraints on $\left(p_1,\ldots,p_m\right)$. A priori, assume a uniform distribution and throw $N$ balls into $m$ buckets with probability $\frac{1}{m}$ for each bucket. We end up with $\left(n_1,\ldots, n_m\right)$ balls in the different buckets. Let $p_i=\frac{n_i }{N }$. We will keep the result if $\left(p_1,\ldots,p_m\right)$ satisfies (or close to satisfy) the constraints.
+
+Which distribution $\left(p_1,\ldots,p_m\right)$ is obtained with maximal probability (when $N$ goes to infinity)? The probability for $\left(n_1,\ldots, n_m\right)$ is 
+\[
+\frac{N!}{n_1 ! \cdot n_2 ! \cdots n_m !} \cdot m^{-N}\approx 2^{N\cdot \operatorname{H}\left(p_1,\ldots,p_m\right)}\cdot m^{-N}
+\]
+So the distribution that is obtained with maximal probability is the maximal entropy.
+
+\section{Second Law of Thermodynamics}
+
+A surprising and unique law of physics in many ways. It's fully proven but paradoxical!
+
+\textbf{Loschmidt's Paradox}: All laws of physics (surely mechanics) are reversible in time. How come we got a law that is irreversible?
+
+\textbf{Poincare Recurrence Theorem}: Every isolated physical system must return, after sufficiently large time, to a state that is very close to it's original state, so how can the second law of thermodynamics hold.
+
+\textbf{Arrow of Time}: The second law of thermodynamics defines an arrow (direction) of time. Why is that direction from past (what we remember) to future?
+
+\section{The Prediction from Expert Advice Problem}
+
+Suppose that there is a sequence of values $x_1,\ldots,x_T\in\left\{-1,1\right\}$. We think of $t\in\left\{1,\ldots,T\right\}$ as the time. For example $x_t$ could be $1$ or $-1$ according to whether the stock market goes up or down in day $t$. There are $n$ experts who try at each time $t$ to predict $x_t$.
+
+Assume that we can see that past and the advice given by each expert in the past. Based on past performance at each time $t$, we need to decide about a probability distribution $p^{(t)}=\left(p_1^{(1)},\ldots,p_1^{(t)}\right)$ and follow the advice given by expert $i$ with probability $p_i^{(t)}$ (or, we put $p_i^{(t)}$ fraction of our money on the advice given by expert $i$).
+
+We want the expectation of the number of times that we are wrong to be as close as possible to the one of the best expert, in retrospect (in worst case)!
+
+For every expert $i$, we denote $E_i^{(T+1)}$ equals the number of times that expert $i$ was wrong in steps $1,\ldots,T$.
+
+The \textbf{Multiplicative Weights Algorithm} guarantees expected number of wrong predictions
+\[
+\min_i E_i^{T+1} + \mathcal{O}\left(\sqrt{T}\right)
+\]
+Assumes nothing about the predictions of the experts (they may be adversarial) and nothing about $x_1,\ldots,x_T$ (they may be chosen adversarially after seeing the algorithm).
+
+\subsection{The Multiplicative Weights Algorithm}
+
+For every expert $i$, we denote $E_i^{(t)}$ equals the number of times that expert $i$ was wrong in steps $1,\ldots,t-1$. Take 
+\[
+p_i^{(t)}\sim \left(1-\epsilon\right)^{E_i^{(t)}}
+\]
+(normalized of course).
+
+That is, the algorithm starts from the uniform distribution and ``punishes'' each expert by multiplying its weight by $\left(1-\epsilon\right)$ for each mistake.
+
+Guarantees expected number of wrong predictions
+\[
+\min_i E_i^{T+1} + \mathcal{O}\left(\sqrt{T}\right)
+\]
+
+\subsection{Connection to Boltzmann}
+Take 
+\[
+p_i^{(t)}\sim \left(1-\epsilon\right)^{E_i^{(t)}}
+\]
+Equivalently,
+\[
+p_i^{(t)} = \frac{1}{Z^(t)}\cdot e^{-\beta E_i^{(t)}}
+\]
+where $\beta = -\ln(1-\epsilon)$
+
+Intuitively, we want to place high probability on experts with good past performance (small $E_i^{(t)}$), but on the other hand we want our ... and I lost it.
+
+The expected number of times that a distribution $p=\left(p_1,\ldots,p_n\right)$ was wrong in time steps $1,\ldots,t-1$ is 
+\[
+\sum_{i=1 }^{n }p_i E_i^{(t)}
+\]
+Among all the distributions with the same past performance, take the one with maximum entropy: Boltzmann distribution:
+\[
+p_t^{(t)}=\frac{1}{Z^{(t)}} \cdot e^{-\beta E_i^{(t)}}
+\]
+
+
+\end{document}
