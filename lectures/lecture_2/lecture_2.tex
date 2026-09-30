@@ -15,7 +15,7 @@ $X$ is a discrete random variable (finite number of states) and entropy is defin
 \[
 H(X) = -\sum_a P(X=a)\log P(X=a)=-\mathbb{E}_X \log P(X)
 \]
-Shannon's entropy is the only function that satisfies the grouping axiom and 3 adition, veru reasonable, axioms.
+Shannon's entropy is the only function that satisfies the grouping axiom and 3 additional, very reasonable, axioms.
 
 If $X$ is a random variable over $n$ elements, then 
 \[
@@ -55,7 +55,7 @@ For random variables $X,Y$
 \]
 The first inequality is trivial, and the second is proved by Jensen inequality.
 
-Intuitively, the uncertainty remainded in $X$ after seeing $Y$ is smaller than the original uncertainty in $X$. The uncertainty can only decrease by revealing $Y$. Also the uncertainty is always larger than $0$.
+Intuitively, the uncertainty remaining in $X$ after seeing $Y$ is smaller than the original uncertainty in $X$. The uncertainty can only decrease by revealing $Y$. Also the uncertainty is always larger than $0$.
 
 $H(X|Y)=H(X)$ if and only if $X,Y$ are independent. It's not hard but we will not prove.
 
@@ -493,14 +493,33 @@ Stirling's approximation is $\ln(m!)\approx m\ln m-m$. Thus,
 \]
 which then can be written as 
 \[
-\ln\binom{n }{k }\approx n\ln n -k\ln k - \left(n-k\right)\ln \left(n-k\right) = -k \ln \left(\frac{k}{n}\right)\cdots
 \]
-
-See the photo.
+\begin{align*}
+    \ln\binom{n }{k }&\approx n\ln n -k\ln k - \left(n-k\right)\ln \left(n-k\right) = -k \ln \left(\frac{k}{n}\right) - \left(n-k\right) \ln \left(\frac{n-k}{n}\right)\\
+    &= -np\ln p - n \left(1-p\right)=n\cdot\left(-p\ln p -\left(1-p\right)\ln\left(1-p\right)\right)
+\end{align*}
+Hence, we have 
+\[
+\log \binom{n }{k } \approx n\cdot \left(-p\ln p -\left(1-p\right)\ln\left(1-p\right)\right) = n\cdot \operatorname{H}\left(p, 1-p\right)
+\]
+and 
+\[
+\binom{n }{k } \approx 2^{n\cdot \operatorname{H}\left(p, 1-p\right)}
+\]
 
 \subsection{Approximating Multinomial Coefficients}
 
-See the photo.
-
+Let $\left(p_1,\ldots, p_m\right)$ be a distribution and thus $\sum_{i=1 }^{m }p_i =1$. Let $n\in \mathbb{N}$ and let $\left(n_1,\ldots,n_m\right)$ be such that $n_i=np_i$ and thus $\sum_{i=1 }^{m }n_i=n$. Consider the multinomial coefficient 
+\[
+\frac{n!}{n_1!\cdot n_2!\cdots n_m!}=\frac{n!}{\left(np_1\right)!\cdot \left(np_2\right)!\cdots \left(np_m\right)!}
+\]
+Given the work that we did in the last subsection, it follows that 
+\[
+\frac{1}{n}\cdot \log \left(\frac{n!}{n_1!\cdot n_2!\cdots n_m!}\right) \rightarrow -\sum_{i=1 }^{m }p_i\log p_i = \operatorname{H}\left(p_1,\ldots,p_m\right)
+\]
+where it follows that 
+\[
+\binom{n }{n_1,\ldots,n_m}\approx 2^{n\cdot \operatorname{H}\left(p_1,\ldots,p_m\right)}
+\]
 
 \end{document}
