@@ -1,0 +1,331 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb}
+\usepackage{array}
+\usepackage{xcolor}
+
+\begin{document}
+
+\section{Introduction}
+
+Lecture 5 is about relative entropy and differential entropy.
+
+\section{Relative entropy}
+
+It's really just a generalization of entropy.
+
+\subsection{Definition}
+
+Let $p=\left(p_1,\ldots,p_m\right)$ and $q=\left(q_1,\ldots, q_m\right)$ are two distributions
+\[
+\operatorname{D}\left(p\| q\right) = \sum_{i} p_i\log\left(\frac{p_i}{q_i}\right) \geq 0
+\]
+Note that 
+\begin{itemize}
+    \item $0\log \frac{0 }{0 }= 0$
+    \item $a\log \frac{a }{0 }=\infty$ (for $a>0$)
+    \item $\operatorname{D}\left(p\| q\right)$ may be infinite
+\end{itemize}
+There are many names and many different interpretations.
+
+\subsection{Intuition}
+
+Let $X$ be a random variable over $\left\{1,\ldots, m\right\}$. We know that $\operatorname{H}(X)$ measures the uncertainty of $X$, the amount of information that we don't know about $X$. We can view $\log m - \operatorname{H}(X)$ as the measurement of the information that we do have about $X$, simply by knowing the distribution.
+
+\subsubsection{Example}
+
+Let $m=4$ and $X=\left(X_1, X_2\right)\in \left\{00,01,10,11\right\}$. Let the distribution be $\left(\frac{1}{2}, 0, 0, \frac{1 }{2}\right)$. It follows that ... and I missed it.
+
+\subsubsection{Back to interpretation}
+
+Originally we thought that $X$ is uniformly distributed. We learned that $X\sim \left(p_1,\ldots,p_m\right)$. How mu information did we gain about $X$? 
+\[
+\operatorname{H}\left(\frac{1}{m},\ldots,\frac{1 }{m}\right) - \operatorname{H}\left(p_1,\ldots,p_m\right)=\log m -\operatorname{H}(X)
+\]
+Note that 
+\[
+\log m -\operatorname{H}\left(p_1,\ldots,p_m\right)= \log m + \sum_i p_i \log p_i = \sum_i p_i\log \left(\frac{p_i }{1/m}\right)=\operatorname{D}\left(p\| q\right)
+\]
+where $q$ is the uniform distribution.
+
+Thus $\operatorname{D}\left(p\| q\right)$, where $q$ is the uniform distribution, is a measure for the information that we gained about $X$ if originally we thought that $X$ is uniformly distributed and then learned what the true distribution is.
+
+\subsection{Interpretation of $\operatorname{D}\left(p\| q\right)$}
+
+More generally: Assume that we originally thought that a random variable $X$ is distributed according to $q$, and we learned that it is distributed according to $p$. The relative entropy $\operatorname{D}\left(p\| q\right)$ is a measure for the amount of information that we gained.
+
+\subsection{Today's Lecture}
+
+We will try to better understand this notion, its relevance, and why it is used to measure the information gain.
+\begin{itemize}
+    \item What does it mean that we learned that $X$ is distributed differently? How can the distribution of $X$ change?
+    \item Why this function?
+    \item What are its properties?
+    \item Are there interesting relations to mutual information?
+\end{itemize}
+
+\section{How can the distribution change?}
+
+What does it mean that originally we thought that $X$ is distributed according to $q$, and then we learned that it is distributed according to $p$? How can the distribution of $X$ change?
+
+\textbf{Usually, this happens when we learn additional information about $X$.} We condition on something.
+
+\subsection{Example}
+
+Let $X\in\left\{1,2,3,4\right\}$. The distribution of $X$ is $q=\left(\frac{1 }{2}, \frac{1 }{4 },\frac{1 }{4 },0\right)$ ... and I missed the rest.
+
+\subsubsection{Another example}
+
+Missed it too, see photo.
+
+\subsection{$\operatorname{D}\left(p\| q\right)$ versus $\operatorname{H}(q)-\operatorname{H}(p)$}
+
+We saw that if $q$ is the uniform distribution,
+\[
+\operatorname{D}\left(p\| q\right) = \log m - \operatorname{H}(p) = \operatorname{H}(q)-\operatorname{H}(p)
+\]
+... and I missed the rest, see photo.
+
+\subsection{Example}
+
+If $q$ is the distribution of $X$, and $E$ is an event that depends only on $X$, and $p$ is the distribution of $X$ conditioned on $E$. That is $q=P_X$ and $p=P_{X\mid E}$
+\[
+p_i = \begin{cases}
+   0 & i\notin E \\
+   \frac{q_i}{P_X(E)} & i\in E
+\end{cases}
+\]
+Then 
+\[
+\operatorname{D}\left(p\| q\right) = \operatorname{D}\left(P_{X\mid E}\| P_X\right) = \log \frac{1}{P_X(E)}
+\]
+is the information that we gained by learning that $X\in E$.
+\begin{align*}
+    \operatorname{D}\left(p\| q\right) &= \sum_i p_i\log \left(\frac{p_i }{q_i}\right) = \sum_{i\in E} p_i\log\left(\frac{p_i }{q_i}\right)\\
+    &= \sum_{i\in E}p_i  \log \frac{1}{P_X(E)} =  \log \frac{1}{P_X(E)}
+\end{align*}
+I'm unsure what we just did here.
+
+\section{Does $\operatorname{D}\left(p\| q\right)=\infty$ make sense?}
+
+If for some $i$ we have $q_i=0$ and $p_i>0$ then $\operatorname{D}\left(p\| q\right)=\infty$. Makes sense because if originally the probability for $i$ is $0$, it cannot become positive by learning something (it cannot become positive by conditioning on an event).
+
+Hence, it makes sense to think of the information gain as infinite: We were absolutely sure that $X\neq i$ and now we think that maybe $X=i$.
+
+Alternatively, we can define $\operatorname{D}\left(p\| q\right)$ only for distributions such that $q_i=0$ implies $p_i=0$.
+
+\section{Axiomatic Derivation: The Axioms}
+
+Why this function? Well let's do an axiomatic derivation.
+\begin{enumerate}
+    \item $\operatorname{D}\left(p\| q\right)$ is continuous and symmetric (invariant to permutations of coordinates, not $p$ and $q$)
+    \item If $q=\left(\frac{1}{m},\ldots,\frac{1}{m}\right)$, then $\operatorname{D}\left(p\| q\right)=\log m -\operatorname{H}\left(p_1,\ldots,p_m\right)$
+    \item \textbf{Special case} \begin{align*}
+\operatorname{D}\bigl( (p_1,\ldots,p_m) &\parallel (q_1,\ldots,q_m) \bigr) = \\
+\operatorname{D}\biggl( \Big(p_1,\ldots,p_{m-1},\frac{p_m}{2},\frac{p_m}{2}\Big) &\parallel \Big(q_1,\ldots,q_{m-1},\frac{q_m}{2},\frac{q_m}{2}\Big) \biggr)
+\end{align*}
+\end{enumerate}
+Intuitively, symbol $m$ is partitioned into two new symbols with equal probabilities in both $p,q$. We gained new information about about the original partition to $\left\{1,\ldots, m\right\}$ but no new information about the partition of symbol $m$ into two symbols.
+
+\subsection{General case}
+\begin{align*}
+\operatorname{D}\bigl( (p_1,\ldots,p_m) &\parallel (q_1,\ldots,q_m) \bigr) = \\
+\operatorname{D}\biggl( \Big(\frac{p_1}{k_1},\ldots,\frac{p_1}{k_1},\ldots,\frac{p_m}{k_m},\ldots\frac{p_m}{k_m}\Big) &\parallel \Big(\frac{q_1}{k_1},\ldots,\frac{q_1}{k_1},\ldots,\frac{q_m}{k_m},\ldots\frac{q_m}{k_m}\Big) \biggr)
+\end{align*}
+where each $\frac{p_i}{k_i}$ and $\frac{q_i}{k_i}$ are repeated $k_i$ times.
+
+Intuitively, we only gained new information about the partition into groups but not about the more refined partition inside each group. It's kind of just the grouping axiom, but for relative entropy.
+
+This can also be viewed as a special case of the chain rule. $p,q$ in the right hand side can be viewed as joint distribution of $X,Y$, where $X$ indicates the group and $Y$ indicates the place in the group. Only the distribution of $X$ changed (and not the distribution of $Y$ conditioned on $X$), so the information gained is only from the change in the distribution of $X$.
+
+\subsection{Axiomatic Derivation of $\operatorname{D}\left(p\| q\right)$}
+
+Let $\left(p_1,\ldots,p_m\right)$ be an arbitrary distribution. Let $\left(q_1,\ldots, q_m\right)$ be an arbitrary distribution, such that $q_1,\ldots,q_m$ are positive and rational, $q_i=\frac{k_i }{M}$ for some $k_1,\ldots,k_m,M>0$ (where $M$ is a common multiple).
+
+Assume $q_i = \frac{k_i }{M }>0$. By the third axiom, 
+\begin{align*}
+\operatorname{D}\bigl( (p_1,\ldots,p_m) &\parallel (q_1,\ldots,q_m) \bigr) = \\
+\operatorname{D}\biggl( \Big(\frac{p_1}{k_1},\ldots,\frac{p_1}{k_1},\ldots,\frac{p_m}{k_m},\ldots\frac{p_m}{k_m}\Big) &\parallel \Big(\frac{q_1}{k_1},\ldots,\frac{q_1}{k_1},\ldots,\frac{q_m}{k_m},\ldots\frac{q_m}{k_m}\Big) \biggr)
+\end{align*}
+where each $\frac{p_i}{k_i}$ and $\frac{q_i}{k_i}$ are repeated $k_i$ times. It follows that 
+\begin{align*}
+\operatorname{D}\bigl( (p_1,\ldots,p_m) &\parallel (q_1,\ldots,q_m) \bigr) = \\
+\operatorname{D}\biggl( \Big(\frac{p_1}{k_1},\ldots,\frac{p_1}{k_1},\ldots,\frac{p_m}{k_m},\ldots\frac{p_m}{k_m}\Big) &\parallel \Big(\frac{1}{M},\ldots,\frac{1}{M},\ldots,\frac{1}{M},\ldots\frac{1}{M}\Big) \biggr)
+\end{align*}
+By the second axiom, this is equal to 
+\[
+\log M - \operatorname{H}\left(\frac{p_1}{k_1},\ldots,\frac{p_1}{k_1},\ldots,\frac{p_m}{k_m},\ldots\frac{p_m}{k_m}\right)
+\]
+Assume $q_i = \frac{k_i }{M }>0$. Thus,
+\begin{align*}
+    \operatorname{D}\left(p\| q\right) &= \log M - \operatorname{H}\left(\frac{p_1}{k_1},\ldots,\frac{p_1}{k_1},\ldots,\frac{p_m}{k_m},\ldots\frac{p_m}{k_m}\right)\\
+    &= \sum_{i=1 }^{m }p_i\log M + \sum_{i=1 }^{m }p_i\log\left(\frac{p_i }{k_i }\right) = \sum_{i=1 }^{m }p_i\log\left(\frac{p_i }{k_i/M }\right)\\
+    &= \sum_{i=1 }^{m }p_i\log \left(\frac{p_i }{q_i}\right)
+\end{align*}
+We assumed that for every $i,q_i>0 $ is rational. The irrational case and the case $q_i=0$ follow by continuity.
+
+\section{The information that $Y$ gives on $X$}
+
+The information that the event $Y=b$ gives on $X$ is 
+\[
+\operatorname{D}\left(P_{X\mid Y=b}\| P_X\right)
+\]
+Averaging over all elements $b$, we get the information that $Y$ gives on $X$
+\begin{align*}
+    \sum_{b} \operatorname{P}\left(Y=b\right)\cdot & \operatorname{D}\left(P_{X\mid Y=b}\| P_X\right)\\
+     &= \sum_b \operatorname{P}\left(Y=b\right)\sum_a \operatorname{P}\left(X=a\mid Y=b\right)\log \frac{\operatorname{P}\left(X=a\mid Y=b\right)}{\operatorname{P}\left(X=a\right)}\\
+    &= \sum_{a,b} \operatorname{P}\left(X=a, Y=b\right)\log \frac{\operatorname{P}\left(X=a\mid Y=b\right)}{\operatorname{P}\left(X=a\right)}\\
+    &= \operatorname{H}(X) -= \operatorname{H}(X\mid Y)=\operatorname{I}(X;Y)
+\end{align*}
+
+\subsection{An Additional Connection to Mutual Information}
+
+\[
+\operatorname{I}(X;Y) = \operatorname{D}\left(P_{X,Y}\| P_X \times P_Y\right)
+\]
+that is, the entropy of $\operatorname{P}\left(X=a,Y=b\right)$, relative to the product distribution $\operatorname{P}\left(X=a\right)\cdot \operatorname{P}\left(Y=b\right)$ (as if $Y,X$ were independent).
+
+\textbf{The proof follows immediately by the definitions.}
+
+\section{Conditional Relative Entropy}
+
+$P,Q$: two joint probability distributions of two random variables $X,Y$ (could be thought of as two matrices of values) (a good example to have in mind is that $Q$ is the original probability distribution and $P$ is the distribution $Q$ conditioned on an event $E$)
+
+For every event $Y=b$, we can consider the relative entropy of the distributions $P_{X\mid Y=b}$ and $Q_{X\mid Y=b}$
+\[
+\operatorname{D}\left(P_{X\mid Y=b}\| Q_{X\mid Y=b}\right)=\sum_a P(X=a\mid Y=b)\log \frac{P(X=a\mid Y=b)}{Q(X=a\mid Y=b)}
+\]
+The conditional relative entropy of the distributions $P_{X\mid Y}$ and $Q_{X\mid Y}$ is defined by averaging over all elements $b$,
+\begin{align*}
+    \operatorname{D}\left(P_{X|Y}\| Q_{X|Y}\right) &= \sum_b P(Y=b)\cdot \operatorname{D}\left(P_{X\mid Y=b}\| Q_{X\mid Y=b}\right)\\
+    &= \sum_{a,b} P(X=a, Y=b)\log \frac{P(X=a\mid Y=b)}{Q(X=a\mid Y=b)}
+\end{align*}
+Sometimes denoted as 
+\[
+\operatorname{D}\left(P(X\mid Y)\| Q(X\mid Y)\right)
+\]
+
+\subsection{Chain Rule}
+
+For two joint probability distributions $P,Q$ of two random variables $X,Y$
+\[
+\operatorname{D}\left(P_{X,Y}\| Q_{X,Y}\right) = \operatorname{D}\left(P_Y\| Q_Y\right) + \operatorname{D}\left(P_{X|Y}\| Q_{X|Y}\right)
+\]
+The chain rule generalizes to $n$ variables $X_1,\ldots, X_n$.
+
+\subsection{Superadditivity}
+
+For two joint probability distributions $P,Q$ of two random variables $X,Y$ such that $Q_{X,Y}$ is a product distribution: $Q_{X,Y} = Q_X \times Q_Y$ (that is $X,Y$ are independent according to $Q$)
+\[
+\operatorname{D}\left(P_{X,Y}\| Q_{X,Y}\right) \geq \operatorname{D}\left(P_{X}\| Q_{X}\right)  + \operatorname{D}\left(P_{Y}\| Q_{Y}\right) 
+\]
+The proof follows by a convexity argument. The direction of the inequality is reversed, compared to subadditivity of entropy.
+
+Superadditivity is only true for a product distribution $Q$. In general, unlike entropy $\operatorname{D}\left(P_{X|Y}\| Q_{X|Y}\right)$ and $\operatorname{D}\left(P_{X}\| Q_{X}\right)$ are incomparable.
+
+\subsubsection{Generalizes to $n$ random variables}
+
+Superadditivity generalizes to $n$ variables $X_1,\ldots, X_n$: For two joint probability distributions $P,Q$ of $n$ random variables $X_1,\ldots, X_n$ such that $Q_{X_1,\ldots,X_n}$ is a product distribution:
+\[
+Q_{X_1,\ldots,X_n} = Q_{X_1}\times \cdots \times Q_{X_n}
+\]
+that is $X_1,\ldots, X_n$ are independent according to $Q$. We have ... and I missed it.
+
+\section{Convexity}
+
+For four probability distributions $p_1,p_2,q_1,q_2$, over the same finite set, and every $0\leq \lambda \leq 1$, let 
+\[
+p=\lambda p_1 + (1-\lambda) p_2
+\]
+and 
+\[
+q= \lambda q_1 + (1-\lambda) q_2
+\]
+Then,
+\[
+\operatorname{D}\left(p\| q\right) \leq \lambda \operatorname{D}\left(p_1\| q_1\right)+ (1-\lambda)\operatorname{D}\left(p_2\| q_2\right)
+\]
+
+\section{Relative Entropy as a Distance}
+
+$\operatorname{D}\left(p\| q\right)$ is sometimes called KL-distance and used as a measure for how far $p$ is from $q$. This is perfectly ine, but note that mathematically it's not a distance function: $\operatorname{D}\left(p\| q\right)$ is usually not equal to$\operatorname{D}\left(q\| p \right)$.
+
+\subsection{Pinsker's Inequality}
+
+If $p=\left(p_1,\ldots,p_m\right)$ and $q=\left(q_1,\ldots,q_m\right)$ are two distributions on $m$ elements 
+\[
+\| p-q\|_1 = \sum_{i=1 }^{m }|p_i-q_i|_1 \leq \sqrt{2\ln 2 \cdot \operatorname{D}\left(p\| q\right)}
+\]
+The other direction is not correct: $\| p-q\|_1$ may be very small and still $\operatorname{D}\left(p\| q\right)$ very large (even infinite)
+
+\section{Entropy of a Random Variable over the Integers}
+
+$X$: a discrete random variable (possibly infinite number of states), say over the integers 
+\[
+H(X) = - \sum_{i=-\infty }^{\infty} \operatorname{P}\left(X=i \right)\log \operatorname{P }\left(X=i\right) = -\sum_i \operatorname{P}_i \log \operatorname{P }_i
+\]
+(as in the finite case)
+
+\subsection{Entropy of a continuous random variable}
+
+If $X$ is a continuous random variable, we define 
+\[
+\operatorname{H}(X) = - \int f(x) \log f(x) \, dx
+\]
+where $f(x)$ is the probability density function (in analogy to the finite case). We assume that $X$ has a ``nice'' probability density function and that the integral is well defined. This is also called \textbf{Differential Entropy}. It may be negative, meaning that the equalities generalize but inequalities do not necessarily generalize.
+
+\subsection{Intuition}
+
+Assume that we know $X$ up to precision $\Delta$, where $\Delta$ is very small (say $\Delta=0.01$ (although the constant is meaningless)). Let $X_\Delta$ be $X$ rounded to precision $\Delta$
+\[
+\operatorname{H}\left(X_\Delta\right) = -\sum_{i=-\infty}^{\infty} \operatorname{P}_i \log \operatorname{P}_i
+\]
+where $\operatorname{P}_i=\operatorname{P}\left(i\cdot \Delta \leq X\leq \left(i+t\right)\cdot \Delta\right)$. Let $x_i$ be some point in the interval $\left[i\cdot \Delta, \left(i+1\right)\cdot \Delta\right]$. If $f$ is sufficiently nice: $\operatorname{P}_i\approx f(x_i)\cdot \Delta$, then
+\begin{align*}
+    \operatorname{H}\left(X_\Delta\right) &= -\sum_{i=-\infty}^{\infty} \operatorname{P}_i \log \operatorname{P}_i\\
+    &\approx -\sum_{i=-\infty}^{\infty} f(x_i)\cdot \Delta\cdot \log \left(f(x_i)\cdot \Delta\right)\\
+    &= -\sum_{i=-\infty}^{\infty} f(x_i)\cdot \Delta\cdot \log \left(f(x_i) + \log \Delta\right)\\
+    &= -\sum_{i=-\infty}^{\infty} f(x_i)\cdot \Delta\cdot \log f(x_i)-\sum_{i=-\infty}^{\infty} f(x_i)\cdot \Delta \cdot \log \Delta\\
+\end{align*}
+In the limit $\Delta\to 0$, we get 
+\[
+\sum_{i=-\infty}^{\infty} f(x_i)\cdot \Delta\cdot \log f(x_i) \to \int f(x)\log f(x)\, dx
+\]
+and 
+\[
+\sum_{i=-\infty}^{\infty} f(x_i)\cdot \Delta \to \int f(x)\, dx = 1
+\]
+Therefore,
+\[
+\operatorname{H}\left(X_\Delta\right) + \log\Delta \to -\int f(x) \log f(x) \, dx
+\]
+Thus, we define 
+\[
+\operatorname{H}(X) = -\int f(x)\log f(x) \, dx
+\]
+but it should be interpreted as 
+\[
+\operatorname{H}(X) = -\int f(x)\log f(x) \, dx + \text{ constant}
+\]
+where the constant $-\log\Delta$, depends on the accuracy $\Delta$. Note that 
+\[
+-\log \Delta \to \infty
+\]
+as $\Delta \to 0$.
+
+\subsection{Differential Entropy may be Negative}
+
+Note that $\operatorname{H}(X)$ may be infinite, and also negative. Example $f(x)= \frac{1}{x}$ ... and I lost it.
+
+Because differential entropy may be negative, we want to work in relative entropy.
+
+\subsection{Relative Entropy in the Continuous Case}
+
+If $f,g$ are sufficiently nice probability density functions 
+\[
+\operatorname{D}\left(f\| g\right) = \int f(x) \log \left(\frac{f(x)}{g(x)}\right)\, dx \geq 0
+\]
+Note that there is no uniform distribution over the real numbers.
+
+
+
+\end{document}
