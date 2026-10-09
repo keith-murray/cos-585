@@ -1,0 +1,296 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb}
+\usepackage{array}
+\usepackage{xcolor}
+
+\begin{document}
+
+\section{Introduction}
+
+Lecture 6 is about information theory as a tool in discrete math, part 1! This concerns introductory examples and Shearer's theorem.
+
+We will see examples for problems that are unrelated to information theory but can be solved, elegantly, using information theory. This will show the power of these tools. The problems are chosen based on simplicity and beauty. The goal is to study the usefulness of information theory.
+
+Most often, three types of applications:
+\begin{enumerate}
+    \item Using equalities and inequalities of information theory, mainly chain rules and subadditivity/superadditivity, for carefully defined random variables. \textbf{Our focus}
+    \item Using the entropy function as a potential function, showing that an inductive argument must terminate. By the maximum entropy principle, the entropy function is a natural potential function to study
+    \item \textbf{Compression arguments:} Deriving a contradiction by showing that under a certain assumption, a random variable can be described by another random variable that has smaller entropy
+\end{enumerate}
+None of these techniques are limited to Shannon Entropy. Sometimes other functions are used, such as Renyi Entropy.
+
+\section{Bounding Binomial Coefficients}
+
+Let $n$ be an integer and let $0\leq p \leq \frac{1}{2}$. Then,
+\[
+\sum_{k=0 }^{\operatorname{floor}\left(pn\right)}\binom{n }{k } \leq 2^{\operatorname{H}\left(p, 1-p\right)\cdot n}
+\]
+We already saw that $\binom{n }{k }$, where $k=\operatorname{floor}\left(pn\right)$, is close to $2^{\operatorname{H}\left(p, 1-p\right)\cdot n}$ (using Stirling's approximation). Here we get an exact bound on the sum of binomial coefficients. 
+
+We will use this inequality to prove \textbf{Shannon's Noisy Channel Theorem}.
+
+\subsection{Proof}
+
+Let $S\subset \left\{0,1\right\}^n$ be the sequences with at most $pn$ ones
+\[
+\lvert S \rvert = \sum_{k=0 }^{\operatorname{floor}\left(pn\right)}\binom{n }{k }
+\]
+Let $X=\left(X_1,\ldots, X_n\right)$ be uniformly distributed over $S$ (where $X$ is a random sequence with at most $pn$ ones).
+
+For every $x\in S$, we have $\sum_i x_i \leq pn$. Hence,
+\[
+\sum_i \mathbb{E}\left(X_i\right) = \mathbb{E}\left(\sum_i X_i\right)\leq pn
+\]
+By symmetry, for every $i$, $\mathbb{E}(X_i)$ is the same, so $\mathbb{E}(X_i)\leq p$. Thus $\mathbb{E}(X_i)\leq p$ and hence $\operatorname{P}\left(X_i = 1\right)\leq p$. Hence, since the binary entropy function is monotone (when $p<\frac{1}{2}$),
+\[
+H\left(X_i\right)\leq \operatorname{H}\left(p,1-p\right)
+\]
+Therefore, 
+\[
+\log \lvert S \rvert = \operatorname{H}(X) \leq \sum_i H(X_i)\leq \operatorname{H}\left(p, 1-p\right)\cdot n
+\]
+and
+\[
+\lvert S \rvert \leq 2^{\operatorname{H}\left(p,1-p\right)\cdot n}
+\]
+Oh that's it. That's the proof.
+
+\section{Classmates}
+
+In the computer science department, 1024 students and 20 courses. Because of caps, each course is taken by at most 10\% of the students. \textbf{Prove that there are two students that take the exact same set of courses}.
+
+Let $n=10$, thus $2^n = 1024$. Let $m=2n=20$. The problem would be trivial if $n$ were larger than $m$. We will only need
+\[
+m\leq 2n
+\]
+
+\subsection{Proof}
+
+Denote by $X\in \left\{1,\ldots,s 2^n\right\}$ a uniformly random student. For a course $i\in \left\{1,\ldots, m\right\}$, denote 
+\[
+Y_i = Y_i(X)= \begin{cases}
+    1 &: \text{ if course } i \text{ is taken by student } X\\
+    0 &: \text{ otherwise}
+\end{cases}
+\]
+$Y_1,\ldots,Y_m$ are random variables that depend on $X$.
+
+Let $Y=Y(X) =\left(Y_1, \ldots, Y_m\right)$. Now we want to bound $Y$.
+
+Since each course is taken by at most $10\%$ of the students, 
+\[
+\forall i \operatorname{P}\left(Y_i = 1\right) \leq 0.1
+\]
+Since the binary entropy function is monotone (when $p< \frac{1}{2}$),
+\[
+\forall i \operatorname{H}(Y_i)\leq \operatorname{H}\left(0.1, 0.9\right) < \frac{1 }{2}
+\]
+Therefore, 
+\[
+\operatorname{H}\left(Y \right) \leq \sum_{i=1 }^{m }H(Y_i) < \frac{1}{2}m  \leq n
+\]
+Assume for a contradiction that no two students take the exact same set of courses. Then $Y$ determines $X$ (and vice versa) and hence $\operatorname{H}(X)=\operatorname{H}(Y)$. However,
+\[
+\operatorname{H}(Y) < n = \operatorname{H}(X)
+\]
+
+\section{Isoperimetric Inequality for the Boolean Cube}
+
+Let $S\subseteq\left\{0,1\right\}^n$ (the $n$-dimensional Boolean cube). Let $E$ be the set of edges contained in $S$
+\[
+E = \left\{\left(u,v\right) : u,v\in S, \lvert u-v \rvert =1 (u,v \text{ differ in one coordinate})\right\}
+\]
+The theorem is 
+\[
+\lvert E \rvert\leq \frac{1}{2} \lvert S\rvert \log \lvert S\rvert
+\]
+Equality holds for facets: For a $k$-dimensional facet 
+\[
+\lvert E \rvert= \frac{1}{2}\cdot 2^k \cdot k
+\]
+
+\subsection{Proof}
+Let $E_i \subseteq E$ be the set of edges in direction $i$. Then $\left\{E_1,\ldots, E_n\right\}$ is a partition of $E$.
+\[
+E=\bigcup_{i=1}^{n}E_i,\qquad \lvert E\rvert = \sum_{i= 1 }^{n }\lvert E_i\rvert
+\]
+We can make a random variable $X=\left(X_1,\ldots, X_n\right)$ where $X_i$ is an edge.
+
+\subsection{Lemma}
+
+We need a lemma
+\[
+\operatorname{H}\left(X_1\mid X_2,\ldots, X_n\right) = \frac{2 \lvert E_1\rvert }{\lvert S\rvert}
+\]
+Similarly, for every $i$, 
+\[
+\operatorname{H}\left(X_i\mid X_{[n] / \left\{i\right\}}\right) = \frac{2 \lvert E_i\rvert }{\lvert S\rvert}
+\]
+
+\subsubsection{Proof}
+
+Denote $B$ as the set of all $\left(x_2,\ldots,x_n\right)$ with two points of $S$ above them. Denote $A$ as the set of all $\left(x_2,\ldots, x_n\right)$ with one points of $S$ above them. This means 
+\[
+\operatorname{P}\left(\left(X_2,\ldots,X_n\right)\in B\right) = \frac{2 \lvert E_1\rvert}{\lvert S \rvert}
+\]
+and 
+\[
+\operatorname{P}\left(\left(X_2,\ldots,X_n\right)\in A\right) = 1-\frac{2 \lvert E_1\rvert}{\lvert S \rvert}
+\]
+If $\left(X_2,\ldots,X_n\right)\in A$ then after we know $X_2,\ldots, X_n$ we know $X_1$. If $\left(X_2,\ldots,X_n\right)\in B$, after we know $X_2,\ldots, X_n$, the distribution of $X_1$ is $\left(\frac{1}{2}, \frac{1}{2}\right)$. Therefore, we have 
+\[
+\operatorname{H}\left(X_1\mid X_2,\ldots, X_n\right) = \left(1- \frac{2 \lvert E_1\rvert}{\lvert S \rvert}\right)\cdot 0 + \frac{2 \lvert E_1\rvert}{\lvert S \rvert}\cdot 1 = \frac{2 \lvert E_1\rvert}{\lvert S \rvert}
+\]
+
+\subsection{Back to the proof}
+We have 
+\begin{align*}
+    \log \lvert S \rvert &= \operatorname{H}\left(X_1,\ldots, X_n\right)\\
+    &= H(X_1) + H(X_2\mid X_1)+ \cdots + H(X_n\mid X_1,\dots, X_{n-1})\\
+    & \geq \operatorname{H}\left(X_i\mid X_{[n] / \left\{1\right\}}\right) + \operatorname{H}\left(X_i\mid X_{[n] / \left\{2\right\}}\right) + \cdots + \operatorname{H}\left(X_i\mid X_{[n] / \left\{n\right\}}\right)\\
+    & = \frac{2 \lvert E_1\rvert}{\lvert S \rvert} + \frac{2 \lvert E_2\rvert}{\lvert S \rvert} + \cdots + \frac{2 \lvert E_n\rvert}{\lvert S \rvert} = \frac{2 \lvert E \rvert}{\lvert S \rvert}
+\end{align*}
+That is,
+\[
+2\lvert E \rvert \leq  \lvert S \rvert\log \lvert S \rvert
+\]
+
+\section{Shearer's Inequality: Special Case}
+We have seen the power of subadditivity
+\[
+\operatorname{H}\left(X_1,\ldots, X_n\right)\leq \sum_i \operatorname{H}\left(X_i\right)
+\]
+How does 
+\[
+H(X_1,X_2,X_3)
+\]
+compare to 
+\[
+H(X_1,X_2) + H(X_2,X_3) + H(X_1,X_3)
+\]
+Well, when $X_1,X_2,X_3$ are independent, then 
+\[
+H(X_1,X_2,X_3) = \frac{1}{2}\big[H(X_1,X_2) + H(X_2,X_3) + H(X_1,X_3)\big]
+\]
+In general, 
+\[
+H(X_1,X_2,X_3) \leq \frac{1}{2}\big[H(X_1,X_2) + H(X_2,X_3) + H(X_1,X_3)\big]
+\]
+This is a generalization of subadditivity that many times gives a tighter bound on $H(X_1,X_2,X_3)$. The normalization constant $2$ on the right hand side is the number of sets ... missed it.
+
+\subsection{Proof}
+Let's start with the chain rule
+\begin{align*}
+    \operatorname{H}\left(X_1,X_2,X_3\right) &= H(X_1) + H(X_2\mid X_1) + H(X_3\mid X_1, X_2)\\
+    H(X_1,X_2) &= H(X_1) + H(X_2\mid X_1)\\
+    H(X_2,X_3) &= H(X_2) + H(X_3\mid X_2)\\
+    H(X_1,X_3) &= H(X_1) + H(X_3\mid X_1)\\
+\end{align*}
+The proof follows since the element on the top of a column on the right hand side, is smaller than every element in that column 
+\[
+H(X_2\mid X_1)\leq H(X_2)
+\]
+and 
+\[
+H(X_3\mid X_1, X_2) \leq H(X_3\mid X_2), H(X_3\mid X_1)
+\]
+
+\subsection{Notation}
+For random variables $X_1,\ldots, X_n$ and a set $S=\left\{i_1,\ldots,i_k\right\}\subseteq [n]$,
+\[
+X_S = \left(X_{i_1},\ldots, X_{i_k}\right)
+\]
+and 
+\[
+\operatorname{H}(X_S) = \operatorname{H}\left(X_{i_1},\ldots, X_{i_k}\right)
+\]
+
+\subsection{Shearer's Inequality: More General}
+Let 
+\[
+\mathcal{F}=\left\{S\subseteq [n]: \lvert S \rvert = k\right\}
+\]
+Then,
+\[
+\operatorname{H}\left(X_1,\ldots, X_n\right)\leq \frac{n}{k}\cdot \frac{1}{\lvert \mathcal{F} \rvert}\cdot \sum_{s\in\mathcal{F}}H(X_S)=\frac{n }{k }\cdot \frac{1 }{\binom{n }{k }}\cdot \sum_{s\in\mathcal{F}}H(X_S)
+\]
+Equality when all variables are independent.
+
+The normalization constant $\frac{n }{k }  $ is the ration between ... and I missed it.
+
+The proof is similar to the proof of the special case.
+
+\subsection{Shearer's Inequality: Most General}
+Let $\mathcal{F}$ be family of subsets of $[n]$, such that every $i\in [n]$ appears in at least $m$ sets in $\mathcal{F}$. Then,
+\[
+\operatorname{H}\left(X_1,\ldots, X_n\right)\leq \frac{1}{m}\cdot \sum_{S\in\mathcal{F}}\operatorname{H}\left(X_S\right)
+\]
+
+\section{Bounding the Size of a Set of Points in $\mathbb{R}^3$}
+
+Let $Q\subset \mathbb{R}^3$ be a finite set of points, such that, the projection of $Q$ on the plan $xy$ is of size $6$, the projection of $Q$ on the plan $xz$ is of size 8, and the projection of $Q$ on the plan $yz$ is of size 12.
+
+Let $X=\left(X_1, X_2, X_3\right)$ be a uniformly distributed random variable over $Q$. Then,
+\[
+\]
+\begin{align*}
+    \log \lvert Q\rvert &= H(X) \leq \frac{1}{2}\big[H(X_1,X_2) + H(X_2,X_3) + H(X_1,X_3)\big]\\
+    &\leq \frac{1}{2}\left(\log 6 + \log 8 + \log 14\right)=\frac{1}{2}\log \left(6\cdot 8\cdot 12\right)
+\end{align*}
+which means ... missed some
+\[
+12\leq Q\leq 24
+\]
+
+\subsection{More generally}
+... I missed it.
+There is a more general case for this problem.
+
+\section{Classmates Again}
+
+In the computer science department, 1024 students and 30 courses. For every pair of courses, at most $10\%$ of the students take one or both of them. Prove that there are two students that take the exact same set of courses. 
+
+Let $n=10$, thus $2^n=1024$. Let $m=3n=30$.
+
+\subsection{Proof}
+
+See slides.
+
+\section{Renyi Entropy}
+
+For $\alpha>0$ such that $a\neq 1$,
+\[
+\operatorname{H}_\alpha\left(p_1,\ldots,p_m\right) = \frac{1}{1-\alpha}\log_2\left(\sum_{i=1}^m p_i^\alpha\right)
+\]
+Renyi Entropy for different values of $\alpha$ are sometimes used in combinatorics and theoretical computer science. For some applications they have more-desirable properties than Shannon Entropy.
+
+For $\alpha =0$,
+\[
+\operatorname{H}_0\left(p_1,\ldots,p_m\right) = \log m
+\]
+For $\alpha=1$, if we use the limit, then 
+\[
+H_1(p_1,\ldots,p_m)=\lim_{\alpha\to 1}\operatorname{H}_\alpha\left(p_1,\ldots,p_m\right) = \operatorname{H}\left(p_1,\ldots,p_m\right)
+\]
+For $\alpha=2$,
+\[
+\operatorname{H}_2\left(p_1,\ldots,p_m\right) = -\log \left(\sum_{i=1}^m p_i^2\right)
+\]
+In general, $\operatorname{H}_\alpha\left(p_1,\ldots,p_m\right)$ is non-increasing with $\alpha$.
+
+More generally, we can define Renyi Relative Entropy.
+
+\subsection{Example}
+
+See the slides.
+
+\section{Hellinger Distance}
+
+Equivalent to Renyi Relative Entropy with $\alpha=\frac{1}{2}$. If $p=\left(p_1,\ldots,p_m\right)$ and $q=\left(q_1,\ldots,q_m\right)$ are two distributions on $m$ elements, Hellinger Distance $h(p,q)$ is defined by 
+\[
+\left(h(p,q)\right)^2 = \frac{1}{2}\cdot \sum_i \left(\sqrt{p_1}-\sqrt{q_i}\right)^2
+\]
+
+
+
+\end{document}
