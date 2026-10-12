@@ -180,6 +180,30 @@ Let $T$ be Huffman's tree for $q_1,\ldots,q_{m'}$. We use $T$ as a tree for $p_1
 \end{gather*}
 Since Huffman's tree is optimal, this must be true also for Huffman's.
 
+\subsubsection{Remark: what the proof of $L(T) < H(X)+1$ is really doing}
+
+There are two distributions in the proof: $p$, the true probabilities of the symbols, and $q$, the dyadic distribution we build from $p$. The tree is built for $q$ but scored with $p$.
+
+\textbf{Step 1: build some good code $T$ for $p$.} Since every $q_i = 2^{-d_i}$ is a power of 2, the Lemma (``$L(T)$ when $p_1,\ldots,p_m$ are all powers of 2'') applies to $q$: in Huffman's tree $T$ for $q$, we get $l_i = d_i$. This is why $\sum_i p_i l_i = \sum_i p_i d_i$ holds even though $p$ need not be dyadic. The lengths come from $q$, and $p$ only supplies the weights. Then $q_i > p_i/2$ gives
+\[
+d_i = \log\frac{1}{q_i} < \log\frac{2}{p_i} = \log\frac{1}{p_i} + 1,
+\]
+and so $L_p(T) = \sum_i p_i d_i < H(X) + 1$.
+
+(Huffman for $q$ is just a convenient way to get a prefix tree with lengths exactly $d_i$. Any such tree works. One could instead use Kraft's inequality directly, since $\sum_i 2^{-d_i} \leq 1$. That gives the Shannon code.)
+
+\textbf{Step 2: use optimality.} Let $T^*$ be Huffman's tree for $p$. Since $T^*$ is optimal for $p$, it does at least as well as any prefix code for $p$, $T$ included:
+\[
+L_p(T^*) \leq L_p(T) < H(X) + 1.
+\]
+
+\textbf{Caveats.}
+\begin{itemize}
+    \item Both expected lengths are computed under $p$: $L_p(T) = \sum_i p_i l_i$, \emph{not} $\sum_i q_i l_i$.
+    \item $T$ need not be suboptimal. All we need is that it is \emph{some} valid prefix code for $p$.
+    \item The argument does \emph{not} show that every prefix code has $L < H(X)+1$. That is false: a bad code can be arbitrarily long, e.g.\ by giving a long codeword to a very likely symbol. The bound holds for the optimal code because it is optimal.
+\end{itemize}
+
 \subsection{Back to Huffman's code (a prefix code)}
 
 $X$: a discrete random variabel (finite number of states)
