@@ -1,0 +1,383 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{tikz}
+
+\begin{document}
+
+\section{Introduction}
+
+Lecture 9 is about polar codes.
+
+\section{Review: A General Channel $Q$}
+
+$x$ represents the input to the channel and $y$ represents ... and I missed it.
+
+\subsection{Coding Theory}
+
+Applications of information theory to electrical engineering:
+\begin{itemize}
+    \item Data compression: Given data, we want to represent/encode it using a smaller number of bits
+    \item Error correcting codes: Communicating messages over noisy channels. Storage of information
+\end{itemize}
+The main problem of the codes that we described so far is that they are not explicit and hence encoding and decoding is inefficient.
+
+\textbf{Coding theory: The design of explicit codes.}
+
+\subsection{Linear Codes}
+\[
+a\to f(a) \to Q^\otimes (f(a)) \to g(Q^\otimes (f(a)))
+\]
+An error correcting code is linear if the encoding function 
+\[
+f:\left\{0,1\right\}^m\to \left\{0,1\right\}^n
+\]
+is linear (mod 2). $f$ can be described by a matrix. A random linear transformation is a good error correcting code. There are many explicit constructions.
+
+\subsection{What this lecture is about}
+\begin{itemize}
+    \item Simple, elegant, linear, useful, cool
+    \item Reach channel capacity
+    \item Proof uses information theory; a nice application
+\end{itemize}
+
+\section{The Ants Puzzle}
+
+At times $n=0$, one ant on point $s\in\left[0,1\right]$. In every time-step $n=1,2,3,\ldots$, every any on the interval duplicates into two ants. If the original ant stood on point $t\in\left[0,1\right]$, let $u=t(1-t)$. Then, one of the two ants moves to point $t+u=2t-t^2$ and the other moves to point $t-u=t^2$.
+
+\subsection{Prove}
+
+Prove that for every $\delta$, there exists $n$ such that at time $n$ at most a fraction of $\delta$ of the population of ants is in the interval $\left[\delta,1-\delta\right]$. That is, a fraction of at least $1-\delta$ is in $\left[0,\delta\right]\cup\left[1-\delta,1\right]$ (most ants are close to one of the poles).
+
+\subsubsection{Hint}
+You have to analyze the variance of the population, of the distribution. What happens, when one ant splits to two, the variance of the location increased, but the expectation remained the same. The average remained in the same point, so the expectation of the location remains $s$, but the variance increases until it reaches the poles.
+
+\section{Erasure Channel}
+
+Input is $x\in\left\{0,1\right\}$ and the output is $y\in\left\{0,1,\ast\right\}$. Let $0<\epsilon<1$. A bit is ``erased'' (replaced by $\ast$) with probability $\epsilon$.
+\begin{itemize}
+    \item If alice sends $0$, Bob gets $0$ with probability $1-\epsilon$ and $\ast$ with probability $\epsilon$.
+    \item If alice sends $1$, Bob gets $1$ with probability $1-\epsilon$ and $\ast$ with probability $\epsilon$.
+\end{itemize}
+
+\subsection{Capacity of Erasure Channel}
+
+If $X\sim (p,1-p)$ then $Y\sim (p\cdot (1-\epsilon), \epsilon, (1-p)\cdot(1-\epsilon))$
+\begin{align*}
+    H(Y\mid X) &= H(\epsilon,(1-\epsilon))\\
+    H(Y) &= H(\epsilon, (1-\epsilon)) + (1-\epsilon)\cdot H(p,(1-p))\\
+    I(Y;X) &= H(Y) - H(Y\mid X) = (1-\epsilon)\cdot H(p,(1-p))\\
+    c_Q &= \max_{P_X} I(Y;X)=1-\epsilon
+\end{align*}
+There are two trivial cases:
+\begin{itemize}
+    \item If $\epsilon=0$ then $c_Q=1$
+    \item If $\epsilon=1$ then $c_Q=0$
+\end{itemize}
+
+\subsection{A nice picture}
+\[
+\renewcommand{\arraystretch}{1.2}
+\begin{array}{c@{\;\;}c}
+{\color{blue}Z_1} & \longrightarrow \vphantom{\boxed{Q}} \\
+{\color{blue}Z_2} & \longrightarrow \vphantom{\boxed{Q}} \\
+\vdots & \vdots \vphantom{\boxed{Q}} \\
+\vdots & \vdots \vphantom{\boxed{Q}} \\
+{\color{blue}Z_n} & \longrightarrow \vphantom{\boxed{Q}}
+\end{array}
+\;
+{\color{red}\left[
+\begin{array}{c}
+\vphantom{\boxed{Q}} \\
+\vphantom{\boxed{Q}} \\
+\qquad A \qquad \vphantom{\boxed{Q}} \\
+\vphantom{\boxed{Q}} \\
+\vphantom{\boxed{Q}}
+\end{array}
+\right]}
+\;
+\begin{array}{c@{\;\;}c@{\;\;}c@{\;\;}c@{\;\;}c@{\;\;}c}
+\longrightarrow & {\color{blue}X_1} & \longrightarrow & {\color{red}\boxed{Q}} & \longrightarrow & {\color{blue}Y_1} \\
+\longrightarrow & {\color{blue}X_2} & \longrightarrow & {\color{red}\boxed{Q}} & \longrightarrow & {\color{blue}Y_2} \\
+ & \vdots & & \vdots & & \vdots \vphantom{\boxed{Q}} \\
+ & \vdots & & \vdots & & \vdots \vphantom{\boxed{Q}} \\
+\longrightarrow & {\color{blue}X_n} & \longrightarrow & {\color{red}\boxed{Q}} & \longrightarrow & {\color{blue}Y_n}
+\end{array}
+\]
+There are $n$ copies of the channel $Q$.
+
+$A:\left\{0,1\right\}^n\to\left\{0,1\right\}^n$ is an invertible linear transformation (one to one). Here $A(Z)=X$, $A^{-1}(X)=Z$, $X\in_R \left\{0,1\right\}^n$ uniform, and $Z\in_R\left\{0,1\right\}^n$ uniform.
+
+First, we know $I(Z;Y)=I(X;Y)=n\cdot c_Q$ (since $A$ is invertible). Now, via the chain rules, we can write 
+\[
+I(Z;Y) = \sum_{i=1 }^{n }I(Z_i; Y \mid Z_{<i})
+\]
+
+\subsubsection{Comment}
+
+Since $A$ is linear and $Q$ symmetric, $I(Z_i;Y\mid Z_{<i}=b)$ doesn't depend on $b$. Changing $b$ just adds an additive constant in $\left\{0,1\right\}$ to each variable $X_1,\ldots,X_n$ and hence is just a change of names $0,1$ at the input to the channel. This doesn't change the mutual information because the channel is symmetric.
+
+\subsubsection{Assumption}
+$A$ is such that for every $i$, $I(Z_i; Y \mid Z_{<i})$ is either $0$ or $1$. For $i\in S, \, I(Z_i; Y \mid Z_{<i})=0$, for $i\notin S,\, I(Z_i; Y \mid Z_{<i})=1$
+
+\subsubsection{Encoding}
+
+For $i\in S$, fix $Z_i = 0$. For $i\notin S$, fix $Z_i$ to be a message bit (we assume for simplicity a uniformly random message).
+
+\subsubsection{Decoding}
+
+Given $Y$, inductively over $i$, we figure out $Z$. Assume by induction that we already know $Z_{<i}$. If $i\in S,\quad Z_i=0$. If $i\notin S,\quad I(Z_i; Y\mid Z_{< i})=1$, so $Z_i$ is determined by $Z_{<i},\, Y$. Done! But why would we ever have such an amazing property?
+
+\textbf{Observation: It is enough to have this property approximately}
+
+\subsubsection{Approximately}
+We can make the following changes:
+\begin{enumerate}
+    \item $A$ is such that for almost every $i$, $I(Z_i; Y \mid Z_{<i})$ is either very close to $0$ or very close to $1$.
+    \item For $i\in S, \, I(Z_i; Y \mid Z_{<i})\leq \delta$, for $i\in T,\, I(Z_i; Y \mid Z_{<i})\geq 1-\delta$
+    \item For $i\notin T$, fix $Z_i = 0$.
+    \item For $i\in T$, fix $Z_i$ to be a message bit (we assume for simplicity a uniformly random message).
+    \item If $i\notin T,\quad Z_i=0$. If $i\in T,\quad I(Z_i; Y\mid Z_{< i})\geq 1-\delta$, so $Z_i$ is almost determined by $Z_{<i},\, Y$.
+\end{enumerate}
+
+\textbf{Observation: It is enough to have this property approximately!}
+
+\subsubsection{Another comment}
+Since $Z_i$ is independent of $Z_{<i}$
+\begin{align*}
+    I(Z_i; Y\mid Z_{<i}) &= H(Z_i\mid Z_{<i}) - H(Z_i\mid Y, Z_{<i})\\
+    &= H(Z_i) - H(Z_i\mid Y, Z_{< i})\\
+    &= I(Z_i; Y, Z_{<i})
+\end{align*}
+so we can write 
+\[
+I(Z;Y) = I(X;Y) = n\cdot c_Q = \sum_{i=1 }^{n }I(Z_i; Y \mid Z_{<i}) = \sum_{i=1 }^{n }I(Z_i; Y, Z_{<i})
+\]
+
+\textbf{Goal:} $A$ such that for almost every $i$, $I(Z_i; Y, Z_{<i})$ is very close to 0 or 1.
+
+\textbf{Comment:} We can view $I(Z_i; Y, Z_{<i})$ as the capacity of the channel 
+\[
+Z_i \to Y, Z_{<i}
+\]
+Conceptually, we replaced $n$ original channels by $n$ ``virtual channels''
+
+\subsection{How do we get such a matrix $A$}
+Consider the simplest $2\times 2$ matrix $A^{-1}$
+\[
+\boxed{
+\renewcommand{\arraystretch}{1.3}
+\begin{array}{c@{\;\;}c@{\;\;}c@{\;\;}c@{\;\;}c@{\;\;}c@{\;\;}c@{\;\;}c@{\;\;}c}
+{\color{blue}Z_1} & \longleftarrow & {\color{red}\oplus} & \leftarrow & {\color{blue}X_1} & \longrightarrow & {\color{red}\boxed{Q}} & \longrightarrow & {\color{blue}Y_1} \\
+ & & & \nwarrow & & & & & \\
+{\color{blue}Z_2} & \longleftarrow & \leftarrow & \leftarrow & {\color{blue}X_2} & \longrightarrow & {\color{red}\boxed{Q}} & \longrightarrow & {\color{blue}Y_2}
+\end{array}
+}
+\]
+$Z_2= X_2$ and $Z_1=X_1\oplus X_2$, which is equivalently $X_2= Z_2$ and $X_1 = Z_1 \oplus Z_2$.
+
+First, what is $I(Z_1; Y)$? If we know $Y$ we know $Z_1$ if and only if $Y_1 \neq \ast$ \textbf{and} $Y_2 \neq \ast$ (probability $(1-\epsilon)^2$). Otherwise, $Z_1$ is uniform. Thus $I(Z_1; Y)=(1-\epsilon)^2$. The channel $Z_1\to Y$ is an eraser channel with erasure probability $2\epsilon - \epsilon^2$
+
+Second, what is $I(Z_2; Y, Z_1)$? If we know $Y,Z_1$ we know $Z_2$ if and only if $Y_1\neq \ast$ \textbf{or} $Y_2\neq \ast$ (probability $1-\epsilon^2$). Otherwise, $Z_1$ is uniform. Thus $I(Z_2;Y,Z_1)=1-\epsilon^2$. $Z_2\to Y, Z_1$ is an eraser channel with erasure probability $\epsilon^2$
+
+\subsubsection{Now what do we get?}
+
+We replace the original setup with two virtual channels:
+\begin{enumerate}
+    \item $Z_1\to Y$ is an eraser channel with erasure probability $\epsilon^+ =2\epsilon - \epsilon^2$
+    \item $Z_2\to Y, Z_1$ is an eraser channel with erasure probability $\epsilon^- =\epsilon^2$
+\end{enumerate}
+where $\epsilon^+ + \epsilon^- = 2\epsilon$. This is local polarization. This should remind us of our ant puzzle.
+
+\[
+\boxed{
+\renewcommand{\arraystretch}{1.25}
+\begin{array}{c@{\;\;}c@{\;\;}c@{\;\;}c@{\;\;}c@{\qquad\qquad}c@{\;\;}c@{\;\;}c@{\;\;}c@{\;\;}c}
+{\color{blue}Z_1} & \longleftarrow & {\color{red}\oplus} & \leftarrow & {\color{blue}W_1} &
+{\color{blue}W_1} & \leftarrow & {\color{red}\oplus} & \leftarrow & {\color{blue}X_1} \\
+ & & & \nwarrow & & & & & \nwarrow & \\
+{\color{blue}Z_2} & \longleftarrow & \leftarrow & \leftarrow & {\color{blue}W_3} &
+{\color{blue}W_2} & \leftarrow & \leftarrow & \leftarrow & {\color{blue}X_2} \\
+ & & & & & & & & & \\
+{\color{blue}Z_3} & \longleftarrow & {\color{red}\oplus} & \leftarrow & {\color{blue}W_2} &
+{\color{blue}W_3} & \leftarrow & {\color{red}\oplus} & \leftarrow & {\color{blue}X_3} \\
+ & & & \nwarrow & & & & & \nwarrow & \\
+{\color{blue}Z_4} & \longleftarrow & \leftarrow & \leftarrow & {\color{blue}W_4} &
+{\color{blue}W_4} & \leftarrow & \leftarrow & \leftarrow & {\color{blue}X_4}
+\end{array}
+}
+\]
+
+\[
+\text{We replaced}\quad
+\begin{array}{c@{\;\;}c@{\;\;}c}
+\longrightarrow & {\color{red}\boxed{\epsilon}} & \longrightarrow \\
+\longrightarrow & {\color{red}\boxed{\epsilon}} & \longrightarrow \\
+\longrightarrow & {\color{red}\boxed{\epsilon}} & \longrightarrow \\
+\longrightarrow & {\color{red}\boxed{\epsilon}} & \longrightarrow
+\end{array}
+\qquad\text{with}\quad
+\begin{array}{c@{\;\;}c@{\;\;}c}
+\longrightarrow & {\color{red}\boxed{\epsilon^{{+}{+}}}} & \longrightarrow \\
+\longrightarrow & {\color{red}\boxed{\epsilon^{{+}{-}}}} & \longrightarrow \\
+\longrightarrow & {\color{red}\boxed{\epsilon^{{-}{+}}}} & \longrightarrow \\
+\longrightarrow & {\color{red}\boxed{\epsilon^{{-}{-}}}} & \longrightarrow
+\end{array}
+\]
+
+\textbf{Recursion:} Increase $n$ by a factor of $2$ in each step. Recursive construction on each of two blocks of size $n/2$. Match each channel to the corresponding channel in the other block. Apply one more step. After $\log n$ steps we get our final $n$ channels. By the ants puzzle, for almost every $i$, $I(Z_i; Y, Z_{<i})$ is very close to 0 or very close to 1.
+
+\subsubsection{Final Result}
+For almost every $i$, $I(Z_i; Y, Z_{<i})$ is very close to 0 or very close to 1.
+\begin{itemize}
+    \item For $\approx c_Q\cdot n$ coordinates $i$, $I(Z_i; Y,Z_{<i})> 1-\delta$
+    \item For $\approx (1-c_Q)\cdot n$ coordinates $i$, $I(Z_i; Y,Z_{<i}) < \delta$
+\end{itemize}
+By analyzing the variance 
+\[
+\delta \approx 2^{-\sqrt{n}}
+\]
+which is exponentially small!
+
+\section{General Channel (Symmetric, Binary Input)}
+
+The same construction:
+\[
+\boxed{
+\renewcommand{\arraystretch}{1.3}
+\begin{array}{c@{\;\;}c@{\;\;}c@{\;\;}c@{\;\;}c@{\;\;}c@{\;\;}c@{\;\;}c@{\;\;}c}
+{\color{blue}Z_1} & \longleftarrow & {\color{red}\oplus} & \leftarrow & {\color{blue}X_1} & \longrightarrow & {\color{red}\boxed{Q}} & \longrightarrow & {\color{blue}Y_1} \\
+ & & & \nwarrow & & & & & \\
+{\color{blue}Z_2} & \longleftarrow & \leftarrow & \leftarrow & {\color{blue}X_2} & \longrightarrow & {\color{red}\boxed{Q}} & \longrightarrow & {\color{blue}Y_2}
+\end{array}
+}
+\]
+where $Z_2=X_2$ and $Z_1=X_1\oplus X_2$, or equivalently $X_2=Z_2$ and $X_1= Z_1\oplus Z_2$. We know $I(X_1;Y)=I(X_2; Y)=c_Q$. Hence 
+\[
+I(Z_1;Y) + I(Z_2; Y\mid Z_1) = 2c_Q
+\]
+This is again a local polarization!
+
+Usually, the first is small, as, since $Z_1=X_1\oplus X_2$, it gets the noise from both channels, and the second is large, as, since it's conditioned on knowing $Z_1$, it obtains information from both channels.
+
+This givens an excellent code for many channels!
+
+\subsection{Example: BSC($p$)}
+\begin{itemize}
+    \item $I(Z_1; Y)= I(X_1\oplus X_2;Y_1\oplus Y_2)$ equivalent to BSC($2p-p^2$)
+    \item $I(Z_2; Y\mid Z_1) = I(X_2; Y\mid X_1\oplus X_2)$, equivalent to the information obtained by sending $X_2$ twice, over BSC($p$)
+\end{itemize}
+
+\section{Polar Codes for Compression}
+\[
+\boxed{
+\renewcommand{\arraystretch}{1.2}
+\begin{array}{c@{\;\;}c}
+{\color{blue}Z_1} & \longleftarrow \\
+{\color{blue}Z_2} & \longleftarrow \\
+\vdots & \vdots \\
+\vdots & \vdots \\
+{\color{blue}Z_n} & \longleftarrow
+\end{array}
+\;
+{\color{red}\left[
+\begin{array}{c}
+\vphantom{X_1} \\
+\vphantom{X_2} \\
+\qquad A \qquad \vphantom{\vdots} \\
+\vphantom{\vdots} \\
+\vphantom{X_n}
+\end{array}
+\right]}
+\;
+\begin{array}{c@{\;\;}c}
+\longleftarrow & {\color{blue}X_1} \\
+\longleftarrow & {\color{blue}X_2} \\
+\vdots & \vdots \\
+\vdots & \vdots \\
+\longleftarrow & {\color{blue}X_n}
+\end{array}
+}
+\]
+$A(Z) = X$, $A^{-1}(X)=Z$, $X_1,\ldots, X_n$ are i.i.d., and $X_i\sim (p,1-p)$. Now we have 
+\begin{itemize}
+    \item $H(Z) = H(X) = n\cdot H(p,1-p)$
+    \item $H(Z)= \sum_i H(Z_i\mid Z_{<i})$
+\end{itemize}
+We want $H(Z_i\mid Z_{<i})$ to be close to 0 or 1.
+
+We take the set of $Z_i$-s with $H(Z_i\mid Z_{<i})$ close to 1 (other $Z_i$-s don't give much information about $X$)
+
+\subsection{The setup for two channels}
+\[
+\boxed{
+\renewcommand{\arraystretch}{1.3}
+\begin{array}{c@{\;\;}c@{\;\;}c@{\;\;}c@{\;\;}c}
+{\color{blue}Z_1} & \longleftarrow & {\color{red}\oplus} & \leftarrow & {\color{blue}X_1} \\
+ & & & \nwarrow & \\
+{\color{blue}Z_2} & \longleftarrow & \leftarrow & \leftarrow & {\color{blue}X_2}
+\end{array}
+}
+\]
+... there is more in a picture.
+
+\section{Error Correcting Codes in Discrete Math}
+
+An error correcting code is a function $f:\left\{0,1\right\}^m\to \left\{0,1\right\}^n$, such that, for ever $x\neq x'\in\left\{0,1\right\}^m$, we have 
+\[
+\left| f(x)\oplus f(x') \right|\geq k
+\]
+There are many explicit constructions in all range of parameters.
+
+Error correcting codes can be used to communicate over adversarial channels. ... and I missed the rest.
+
+\section{Communication Complexity of Equality}
+
+Alice has $x\in\left\{0,1\right\}^m$. Bob has $x'\in\left\{0,1\right\}^m$. They want to check if $x=x'$, with minimum communication.
+
+Let $f:\left\{0,1\right\}^m\to \left\{0,1\right\}^n$ be an error correcting code with $k\geq \frac{n}{4}$ (agreed upon beforehand). Alice chooses a random $i\in\left[n\right]$ and sends to Bob $i,\, f(x)_i$. Bob checks if $f(x)_i= f(x')_i$.
+\begin{itemize}
+    \item If $x=x'$, then $P\left[f(x)_i=f(x')_i\right]=1$
+    \item If $x\neq x'$, then $P\left[f(x)_i=f(x')_i\right]=\frac{3}{4}$
+\end{itemize}
+
+Repeat this protocol 100 times (possibly in parallel), to get confidence, if in one of these times they get $f(x)_i\neq f(x')_i$, they know that $x\neq x'$, otherwise, $x=x'$ is very likely.
+
+\section{7-Hat Problem}
+\[
+\left(X_1,X_2, X_3, X_4, X_5, X_6, X_7\right)\in_R \left\{0,1\right\}^7
+\]
+There are 7 players where player $i$ has bit $X_i$ on their forehead. Can see all other bits, but not $X_i$. Simultaneously, each player can guess or not guess their bit. They all win if at least one player guessed correctly and no player guessed incorrectly. They can plan in advance, but no communication after seeing the bits.
+
+What is their maximal success rate? I would guess $\frac{1}{2}$. But it is wrong!
+
+\subsection{Protocol for three players}
+
+A player that sees two different bits (01 or 00) doesn't guess. A player that sees two equal bits (00 or 11) guesses the opposite bit.
+
+If two bits are the same and one is different (001, 010, 100, 011, 101. 110), only the play that has the different bit guesses, and that guess is correct.
+
+If all bits are equal (000, 111), all players guess, incorrectly.
+
+This results in a winning probability of $\frac{3}{4}$.
+
+\subsection{Hamming Code}
+
+We need a function $f:\left\{0,1\right\}^4 \to \left\{0,1\right\}^7$ such that
+\[
+f(Y_1,Y_2,Y_3,Y_4) = \left(Y_1, Y_2, Y_3, Y_4, Y_1\oplus Y_2\oplus Y_4, Y_1\oplus Y_3\oplus Y_4, Y_2\oplus Y_3\oplus Y_4\right)
+\]
+Any element in $\left\{0,1\right\}^7$ is at distance 0 or 1 to a codeword.
+
+\subsubsection{Protocol for 7 players}
+
+A player that sees 6 bits that are not consistent with any codeword, doesn't guess. A play that sees 6 bits that are consistent with a codeword, guesses that bit that is not consistent with that codeword.
+
+If 6 out of 7 bits are consistent with a codeword and the last one is inconsistent with that codeword, only the player that has the inconsistent bit guesses, and that guess is correct.
+
+If all bits are consistent with a codeword, all players guess, incorrectly. The winning probability is $\frac{7}{8}$.
+
+
+
+\end{document}
